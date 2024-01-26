@@ -1,0 +1,26 @@
+name: donor_blood
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment:
+  sdk: ">=3.0.6 <4.0.0"
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  get: ^4.6.5
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.2.2
+  floating_bottom_navigation_bar: ^1.5.2
+  http: ^1.1.0
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
