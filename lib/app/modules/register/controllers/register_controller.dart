@@ -8,6 +8,7 @@ class RegisterController extends GetxController {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var fullNameController = TextEditingController();
+  var confirmPasswordController = TextEditingController();
 
   var registerFormKey = GlobalKey<FormState>();
 
@@ -16,12 +17,13 @@ class RegisterController extends GetxController {
   void onRegister() async {
     if (registerFormKey.currentState!.validate()) {
       try {
-        var url = Uri.http(ipAddress, 'doctor_api/auth/register');
+        var url = Uri.http(ipAddress, 'donor_blood_api/auth/register.php');
 
         var response = await http.post(url, body: {
           'fullname': fullNameController.text,
           'email': emailController.text,
           'password': passwordController.text,
+          'confirmpassword': confirmPasswordController.text,
         });
 
         var result = jsonDecode(response.body);

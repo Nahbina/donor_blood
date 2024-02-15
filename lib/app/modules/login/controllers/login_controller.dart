@@ -42,8 +42,6 @@ class LoginController extends GetxController {
 
           if (isAdmin) {
             Get.offAllNamed(Routes.ADMIN);
-            // } else if (isAdmin) {
-            //   Get.offAllNamed(Routes.ADMIN);
           } else {
             Get.offAllNamed(Routes.MAIN);
           }

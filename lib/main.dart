@@ -8,7 +8,7 @@ void main() async {
   await Memory.init();
   var token = Memory.getToken();
   var role = Memory.getRole();
-  // var isHospital = role == 'hospital';
+
   var isAdmin = role == 'admin';
   runApp(
     GetMaterialApp(
@@ -16,8 +16,6 @@ void main() async {
       title: "Application",
       initialRoute: token == null
           ? Routes.LOGIN
-          // : isHospital
-          //     ? Routes.HOSPITAL_MAIN
           : isAdmin
               ? Routes.ADMIN
               : Routes.MAIN,

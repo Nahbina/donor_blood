@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
 import '../controllers/register_controller.dart';
 
 class RegisterView extends GetView<RegisterController> {
   const RegisterView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,38 +23,38 @@ class RegisterView extends GetView<RegisterController> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   CircleAvatar(
-                    radius: 100,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        height: 250,
-                      ),
-                    ),
-                  ),
-                  // const SizedBox(height: 50),
-                  // const Text(
-                  //   'Donor Blood',
-                  //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
-                  //     fontSize: 30,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    'Enter register details',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
+                    radius: 80,
+                    backgroundColor: Colors.transparent,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 180,
                     ),
                   ),
                   const SizedBox(height: 20),
+                  Text(
+                    'Create Your Account',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Please fill in the details below',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[700],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
                   TextFormField(
                     controller: controller.fullNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Full name',
-                      hintText: 'Enter full name',
+                    decoration: InputDecoration(
+                      labelText: 'Full Name',
+                      hintText: 'Enter your full name',
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
@@ -65,11 +64,11 @@ class RegisterView extends GetView<RegisterController> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: controller.emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email address',
+                    decoration: InputDecoration(
+                      labelText: 'Email Address',
                       hintText: 'Enter your email address',
                       border: OutlineInputBorder(),
                     ),
@@ -82,11 +81,11 @@ class RegisterView extends GetView<RegisterController> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: controller.passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Password',
                       hintText: 'Enter your password',
                       border: OutlineInputBorder(),
@@ -95,37 +94,48 @@ class RegisterView extends GetView<RegisterController> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
                       } else if (value.length < 8) {
-                        return 'Password must be atleast 8 characters';
+                        return 'Password must be at least 8 characters';
                       }
                       return null;
                     },
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: controller.confirmPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm Password',
+                      hintText: 'Re-enter your password',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      } else if (value != controller.passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: controller.onRegister,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(255, 212, 16, 2)),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 212, 16, 2),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
                     ),
-                    child: const SizedBox(
-                      height: 50,
-                      child: Center(
-                        child: Text(
-                          'Register',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
+                    child: Text(
+                      'Register',
+                      style: TextStyle(fontSize: 18),
                     ),
                   ),
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'Already have an account? ',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -136,11 +146,12 @@ class RegisterView extends GetView<RegisterController> {
                           style: TextStyle(
                             color: Colors.red,
                             fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      )
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

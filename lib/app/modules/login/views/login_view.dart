@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
 import '../../../routes/app_pages.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +23,6 @@ class LoginView extends GetView<LoginController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Image(image: NetworkImage(''))
                   CircleAvatar(
                     radius: 100,
                     child: ClipRRect(
@@ -35,15 +33,6 @@ class LoginView extends GetView<LoginController> {
                       ),
                     ),
                   ),
-                  // const SizedBox(height: 50),
-                  // const Text(
-                  //   'Donor Blood',
-                  //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
-                  //     fontSize: 30,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
                   const SizedBox(height: 30),
                   const Text(
                     'Enter login details',
@@ -82,7 +71,7 @@ class LoginView extends GetView<LoginController> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
                       } else if (value.length < 8) {
-                        return 'Password must be atleast 8 characters';
+                        return 'Password must be at least 8 characters';
                       }
                       return null;
                     },
@@ -104,7 +93,6 @@ class LoginView extends GetView<LoginController> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 35),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
