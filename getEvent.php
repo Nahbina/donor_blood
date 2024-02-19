@@ -9,7 +9,7 @@ if (!isset($_POST['token'])) {
 }
 
 // Include necessary files
-include "./database/connection.php";
+include "../database/database_connection.php";
 include "./helpers/auth.php";
 
 // Collect token from the request

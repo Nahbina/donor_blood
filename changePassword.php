@@ -1,6 +1,6 @@
 <?php
 
-include "./database/connection.php";
+include "../database/database_connection.php";
 
 if (isset($_POST['token'], $_POST['old_password'], $_POST['new_password'])) {
 

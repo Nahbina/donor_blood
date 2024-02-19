@@ -1,5 +1,11 @@
 <?php
+// Include database connection
+include "./database/database_connection.php";
 
+// Include authentication helper functions
+include "./helpers/auth.php";
+
+// Check if token is provided in the request
 if (!isset($_POST['token'])) {
     echo json_encode([
         "success" => false,
@@ -8,88 +14,49 @@ if (!isset($_POST['token'])) {
     die();
 }
 
-include "./database/connection.php";
-include "./helpers/auth.php";
-
+// Retrieve token from the POST data
 $token = $_POST['token'];
 
-// if (!isRecepient($token)) {
-//     echo json_encode([
-//         "success" => false,
-//         "message" => "You are not authorized!"
-//     ]);
-//     die();
-// }
+// Get the user ID associated with the token
+$user_id = getUserId($CON, $token);
 
-global $CON;
-
-if (isset($_POST['DonorName'], $_POST['phoneNumber'], $_POST['blood_type'], $_FILES['address'], $_POST['avatar'],)) {
-
-    $name = $_POST['DonorName'];
-    $phoneNumber = $_POST['phoneNumber'];
-    $blood_type = $_POST['blood_type'];
-    $address = $_POST['address'];
-    $avatar = $_FILES['avatar'];
-   
-    $avatar_name = $avatar['name'];
-    $avatar_tmp_name = $avatar['tmp_name'];
-    $avatar_size = $avatar['size'];
-
-    // $hospital_Id = getUserId($token);
-
-    $ext = pathinfo($avatar_name, PATHINFO_EXTENSION);
-
-    if ($ext != "jpg" && $ext != "jfif" && $ext != "png") {
-        echo json_encode([
-            "success" => false,
-            "message" => "Only image files are allowed!"
-        ]);
-        die();
-    }
-
-    if ($avatar_size > 1000000) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Image size should be less than 1MB!"
-        ]);
-        die();
-    }
-
-    $avatar_name = uniqid() . "." . $ext;
-
-    if (!move_uploaded_file($avatar_tmp_name, "./images/" . $avatar_name)) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Image upload failed!"
-        ]);
-        die();
-    }
-
-
-
-
-
-    $sql = "INSERT INTO donors (DonorName, phoneNumber, blood_type, address, avatar) VALUES ('$name', '$phone_Name','$blood_type '$address', '$user_id', 'images/$avatar_name' )";
-
-    $result = mysqli_query($CON, $sql);
-
-    if (!$result) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Donor not added!"
-        ]);
-        die();
-    } else {
-        echo json_encode([
-            "success" => true,
-            "message" => "Donor added successfully!"
-        ]);
-        die();
-    }
-} else {
+// Check if user ID is valid
+if (!$user_id) {
     echo json_encode([
         "success" => false,
-        "message" => "name, phone_Number, blood_type, address, avatar are required!"
+        "message" => "Invalid token!"
     ]);
     die();
 }
+
+
+
+// Prepare the SQL statement
+$sql = "SELECT * FROM donors";
+$stmt = mysqli_prepare($CON, $sql);
+
+// Execute the statement
+mysqli_stmt_execute($stmt);
+
+// Get result set
+$result = mysqli_stmt_get_result($stmt);
+
+if ($result) {
+    $donors = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $donors[] = $row;
+    }
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Donors fetched successfully!",
+        "donors" => $donors
+    ]);
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => "Something went wrong while fetching donors!"
+    ]);
+}
+?>
