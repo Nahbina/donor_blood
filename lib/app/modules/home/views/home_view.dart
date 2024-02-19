@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Donors/views/donors_view.dart';
+import '../../Request/views/request_view.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -48,12 +50,13 @@ class HomeView extends GetView<HomeController> {
                     MainAxisAlignment.spaceBetween, // Adjust as needed
                 children: [
                   _buildFunctionalityContainer(
-                      context, 'Add Donor', Icons.person_add, () {
+                      context, 'Became Donor', Icons.person_add, () {
                     // Navigate to Add Donor Screen
+                    Get.to(() => DonorFormView()); // Navigate to form page
                   }),
                   _buildFunctionalityContainer(
-                      context, 'Request Donor', Icons.request_page, () {
-                    // Navigate to Request Donor Screen
+                      context, 'Add Request ', Icons.request_page, () {
+                    Get.to(() => RequestFormView()); // Navigate to form page
                   }),
                   _buildFunctionalityContainer(
                       context, 'Donation', Icons.favorite, () {
@@ -69,6 +72,40 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget _buildFunctionalityContainer(BuildContext context, String title,
+      IconData iconData, Function() onPressed) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Color.fromRGBO(218, 218, 218, 1),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                iconData,
+                size: 40,
+                color: Colors.red,
+              ),
+              SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFunctionalityRequestContainer(BuildContext context, String title,
       IconData iconData, Function() onPressed) {
     return Expanded(
       child: GestureDetector(

@@ -19,6 +19,7 @@ class MainView extends GetView<MainController> {
           currentIndex: controller.currentIndex.value,
           items: [
             FloatingNavbarItem(icon: Icons.home, title: 'Home'),
+            FloatingNavbarItem(icon: Icons.person, title: 'Blood requests'),
             FloatingNavbarItem(icon: Icons.event_seat, title: 'Event'),
             FloatingNavbarItem(icon: Icons.person, title: 'Profile'),
           ],

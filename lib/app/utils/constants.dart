@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-const ipAddress = '192.168.18.9';
-// const ipAddress = '192.168.1.106';
+// const ipAddress = '192.168.18.9';
+const ipAddress = '192.168.1.73';
 
 var showCustomSnackBar = ({
   required String message,

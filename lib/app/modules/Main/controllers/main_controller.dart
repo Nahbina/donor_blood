@@ -10,6 +10,7 @@ class MainController extends GetxController {
   List<Widget> screens = [
     HomeView(),
     Container(),
+    Container(),
     ProfileView(),
   ];
 
