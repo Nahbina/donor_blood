@@ -1,77 +1,68 @@
 <?php
 
-include "../database/database_connection.php";
+include "./database/database_connection.php";
+include("./helpers/auth.php");
 
-if (isset($_POST['token'], $_POST['old_password'], $_POST['new_password'])) {
-
+if (isset($_POST['token'])) {
     $token = $_POST['token'];
-    $old_password = $_POST['old_password'];
-    $new_password = $_POST['new_password'];
+    $user_id = getUserId($CON,$token);
 
-    global $CON;
 
-    // Authenticate User with Token
-    $userId = authenticateUserWithToken($token);
-    if (!$userId) {
-        echo json_encode([
+    if (!$user_id) {
+        echo json_encode(array(
             "success" => false,
-            "message" => "Invalid token!"
-        ]);
+            "message" => "Invalid token"
+        ));
         die();
     }
 
-    // Verify Old Password
-    $sql = "SELECT password FROM users WHERE user_id = '$userId'";
-    $result = mysqli_query($CON, $sql);
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $hashed_old_password = $row['password'];
-        if (!password_verify($old_password, $hashed_old_password)) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Old password is incorrect!"
-            ]);
-            die();
-        }
 
-        // Update Password
-        $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
-        $update_sql = "UPDATE users SET password = '$hashed_new_password' WHERE user_id = '$userId'";
-        if (mysqli_query($CON, $update_sql)) {
-            echo json_encode([
-                "success" => true,
-                "message" => "Password updated successfully!"
-            ]);
+    if (isset($_POST['old_password']) && isset($_POST['new_password'])) {
+
+        $old_password = $_POST['old_password'];
+        $new_password = $_POST['new_password'];
+
+        $sql = "select * from users where user_id = $user_id";
+        $result = mysqli_query($CON, $sql);
+
+        $user = mysqli_fetch_assoc($result);
+
+        $old_password_hash = $user['password'];
+
+        if (password_verify($old_password, $old_password_hash)) {
+            $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+            $sql = "update users set password = '$new_password_hash' where user_id = $user_id";
+            $result = mysqli_query($CON, $sql);
+
+            if ($result) {
+                echo json_encode(array(
+                    "success" => true,
+                    "message" => "Password changed successfully"
+                ));
+            } else {
+                echo json_encode(array(
+                    "success" => false,
+                    "message" => "Failed to change password"
+                ));
+            }
         } else {
-            echo json_encode([
+            echo json_encode(array(
                 "success" => false,
-                "message" => "Failed to update password!"
-            ]);
+                "message" => "Incorrect password"
+            ));
         }
     } else {
-        echo json_encode([
+        echo json_encode(array(
             "success" => false,
-            "message" => "User not found!"
-        ]);
+            "message" => "Old password and new password are required"
+        ));
+        die();
     }
 } else {
-    echo json_encode([
+    echo json_encode(array(
         "success" => false,
-        "message" => "Token, old password, and new password are required!"
-    ]);
+        "message" => "Token not found"
+    ));
+    die();
 }
-
-function authenticateUserWithToken($token) {
-    global $CON;
-    $sql = "SELECT user_id FROM personal_access_token WHERE token = '$token'";
-    $result = mysqli_query($CON, $sql);
-
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        return $row['user_id'];
-    }
-
-    return false;
-}
-
-?>    

@@ -48,8 +48,8 @@ if (!$userId) {
 }
 
 // Check if required form fields are set
-if (isset($_POST['full_name'], $_POST['user_id'], $_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date'], $_FILES['avatar'], $_POST['phoneNumber'])) {
-    $full_name = $_POST['full_name'];
+if (isset($_POST['user_id'], $_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date'], $_FILES['avatar'], $_POST['phoneNumber'])) {
+    // $full_name = $_POST['full_name'];
     $user_id = $_POST['user_id'];
     $blood_type = $_POST['blood_type'];
     $birth_date = $_POST['birth_date'];
@@ -62,17 +62,17 @@ if (isset($_POST['full_name'], $_POST['user_id'], $_POST['blood_type'], $_POST['
     $ext = pathinfo($avatar_name, PATHINFO_EXTENSION);
 
     // Validate file type and size
-    if ($ext != "jpg" && $ext != "jfif" && $ext != "png") {
+    if (!in_array($ext, ["jpg", "jfif", "png"])) {
         echo json_encode([
             "success" => false,
-            "message" => "Only image files are allowed!"
+            "message" => "Only image files (jpg, jfif, png) are allowed!"
         ]);
         die();
     }
     if ($avatar_size > 1000000) {
         echo json_encode([
             "success" => false,
-            "message" => "Image size should be less than 1MB!"
+            "message" => "Image size should be less than 10MB!"
         ]);
         die();
     }
@@ -87,10 +87,11 @@ if (isset($_POST['full_name'], $_POST['user_id'], $_POST['blood_type'], $_POST['
         die();
     }
 
-    // Insert user as donor into the database
-    $sql = "INSERT INTO donors (full_name, user_id, blood_type, birth_date, last_donation_date, avatar, phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Insert user as donor into the database using prepared statement
+    $avatar_path = "images/" . $avatar_name; // Concatenate the folder name with the file name
+    $sql = "INSERT INTO donors (user_id, blood_type, birth_date, last_donation_date, avatar, phoneNumber) VALUES ( ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($CON, $sql);
-    mysqli_stmt_bind_param($stmt, "sisssss", $full_name, $user_id, $blood_type, $birth_date, $last_donation_date, $avatar_name, $phoneNumber);
+    mysqli_stmt_bind_param($stmt, "sissss", $user_id, $blood_type, $birth_date, $last_donation_date, $avatar_path, $phoneNumber);
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {

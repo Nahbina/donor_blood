@@ -31,9 +31,10 @@ if(!$isAdmin) {
 $event_name = $_POST["event_name"];
 $event_date = $_POST["event_date"];
 $event_location = $_POST["event_location"];
+$event_description = $_POST['event_description'];
 
 // Validate event data (you can add more validation as needed)
-if (empty($event_name) || empty($event_date) || empty($event_location)) {
+if (empty($event_name) || empty($event_date) || empty($event_location)|| empty($event_description)) {
     echo json_encode([
         "success" => false,
         "message" => "All fields are required!"
@@ -42,7 +43,7 @@ if (empty($event_name) || empty($event_date) || empty($event_location)) {
 }
 
 // Insert event data into the database
-$sql = "INSERT INTO events (event_name, event_date, event_location) VALUES ('$event_name', '$event_date', '$event_location')";
+$sql = "INSERT INTO events (event_name, event_date, event_location,event_description) VALUES ('$event_name', '$event_date', '$event_location','$event_description')";
 
 if (mysqli_query($conn, $sql)) {
     echo json_encode([

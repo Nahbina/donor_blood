@@ -29,10 +29,8 @@ if (!$user_id) {
     die();
 }
 
-
-
-// Prepare the SQL statement
-$sql = "SELECT * FROM donors";
+// Prepare the SQL statement with JOIN to get full names from the User table
+$sql = "SELECT donors.*, users.full_name FROM donors JOIN users ON donors.user_id = users.user_id";
 $stmt = mysqli_prepare($CON, $sql);
 
 // Execute the statement

@@ -61,7 +61,7 @@ function isRecipient($CON, $token)
     if ($userId == null) {
         return false;
     }
-    $sql = "SELECT * FROM recipients WHERE user_id = ?";
+    $sql = "SELECT * FROM blood_donation_requests WHERE user_id = ?";
     $stmt = mysqli_prepare($CON, $sql);
     mysqli_stmt_bind_param($stmt, "i", $userId);
     mysqli_stmt_execute($stmt);
