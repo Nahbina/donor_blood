@@ -28,7 +28,7 @@ function isAdmin($CON, $token)
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-        // Error handling if query fails
+        // Error handfroling if query fails
         return false;
     }
     $row = mysqli_fetch_assoc($result);

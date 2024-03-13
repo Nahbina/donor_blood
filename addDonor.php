@@ -17,6 +17,18 @@ if (!isset($_POST['token'])) {
 
 $token = $_POST['token'];
 
+// Extract user ID from the token
+$userId = getUserId($CON, $token);
+
+// Check if user ID is valid
+if (!$userId) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid user ID"
+    ]);
+    die();
+}
+
 // Check if the user associated with the token is authenticated and authorized to become a donor
 if (!getUserId($CON, $token)) {
     echo json_encode([
@@ -35,22 +47,8 @@ if (isDonor($CON, $token)) {
     die();
 }
 
-// Extract user ID from the token
-$userId = getUserId($CON, $token);
-
-// Check if user ID is valid
-if (!$userId) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Invalid user ID"
-    ]);
-    die();
-}
-
 // Check if required form fields are set
-if (isset($_POST['user_id'], $_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date'], $_FILES['avatar'], $_POST['phoneNumber'])) {
-    // $full_name = $_POST['full_name'];
-    $user_id = $_POST['user_id'];
+if (isset($_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date'], $_FILES['avatar'], $_POST['phoneNumber'])) {
     $blood_type = $_POST['blood_type'];
     $birth_date = $_POST['birth_date'];
     $last_donation_date = $_POST['last_donation_date'];
@@ -91,7 +89,7 @@ if (isset($_POST['user_id'], $_POST['blood_type'], $_POST['birth_date'], $_POST[
     $avatar_path = "images/" . $avatar_name; // Concatenate the folder name with the file name
     $sql = "INSERT INTO donors (user_id, blood_type, birth_date, last_donation_date, avatar, phoneNumber) VALUES ( ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($CON, $sql);
-    mysqli_stmt_bind_param($stmt, "sissss", $user_id, $blood_type, $birth_date, $last_donation_date, $avatar_path, $phoneNumber);
+    mysqli_stmt_bind_param($stmt, "sissss", $userId, $blood_type, $birth_date, $last_donation_date, $avatar_path, $phoneNumber);
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {

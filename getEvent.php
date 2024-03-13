@@ -1,5 +1,11 @@
 <?php
+// Include database connection
+include "./database/database_connection.php";
 
+// Include authentication helper functions
+include "./helpers/auth.php";
+
+// Check if token is provided in the request
 if (!isset($_POST['token'])) {
     echo json_encode([
         "success" => false,
@@ -8,18 +14,11 @@ if (!isset($_POST['token'])) {
     die();
 }
 
-// Include necessary files
-include "../database/database_connection.php";
-include "./helpers/auth.php";
-
-// Collect token from the request
+// Extract the token from the request
 $token = $_POST['token'];
-// $userId = getUserId($token); // Assuming there's a function to get the user ID from the token
-$isAdmin = isAdmin($userId, $token);
 
-
-// If the user is not an admin, return error message
-if(!$isAdmin) {
+// Check if the user associated with the token is authenticated and authorized to retrieve events
+if (!getUserId($CON, $token) || !isAdmin($CON, $token)) {
     echo json_encode([
         "success" => false,
         "message" => "Unauthorized access!"
@@ -27,37 +26,33 @@ if(!$isAdmin) {
     die();
 }
 
-// Collect event data from the request
-$event_name = $_POST["event_name"];
-$event_date = $_POST["event_date"];
-$event_location = $_POST["event_location"];
-$event_description = $_POST['event_description'];
+// Retrieve events from the database
+$sql = "SELECT * FROM events";
+$result = mysqli_query($CON, $sql);
 
-// Validate event data (you can add more validation as needed)
-if (empty($event_name) || empty($event_date) || empty($event_location)|| empty($event_description)) {
-    echo json_encode([
-        "success" => false,
-        "message" => "All fields are required!"
-    ]);
-    die();
-}
-
-// Insert event data into the database
-$sql = "INSERT INTO events (event_name, event_date, event_location,event_description) VALUES ('$event_name', '$event_date', '$event_location','$event_description')";
-
-if (mysqli_query($conn, $sql)) {
+if ($result) {
+    $events = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        // Build an array of events
+        $events[] = [
+            "event_name" => $row['event_name'],
+            "event_date" => $row['event_date'],
+            "event_location" => $row['event_location'],
+            "event_description" => $row['event_description'],
+            "event_time" => $row['event_time']
+        ];
+    }
     echo json_encode([
         "success" => true,
-        "message" => "Event added successfully!"
+        "events" => $events
     ]);
 } else {
     echo json_encode([
         "success" => false,
-        "message" => "Error: " . $sql . "<br>" . mysqli_error($conn)
+        "message" => "Failed to retrieve events!"
     ]);
 }
 
-// Close database connection
-mysqli_close($conn);
+// Close the database connection
+mysqli_close($CON);
 ?>
-

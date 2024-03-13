@@ -48,11 +48,11 @@ if (!$userId) {
 }
 
 // Check if required form fields are set
-if (isset($_POST['user_id'], $_POST['blood_type'], $_POST['location'], $_POST['mobile_Number'],$_POST['Age'], $_POST['case_Details'], $_POST['status'])) {
+if (isset($_POST['user_id'], $_POST['blood_Type_request'], $_POST['location'], $_POST['mobile_Number'],$_POST['Age'], $_POST['case_Details'], $_POST['status'])) {
     // $full_name = $_POST['full_name'];
     $user_id = $_POST['user_id'];
     $Age = $_POST['Age'];
-    $blood_type = $_POST['blood_type'];
+    $blood_Type_request = $_POST['blood_Type_request'];
     $location = $_POST['location'];
     $mobile_Number = $_POST['mobile_Number'];
   
@@ -60,9 +60,9 @@ if (isset($_POST['user_id'], $_POST['blood_type'], $_POST['location'], $_POST['m
   
     $status = $_POST['status'];
 
-    $sql = "INSERT INTO blood_donation_requests (user_id, blood_type, location, mobile_Number, Age, case_Details, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO blood_donation_requests (user_id, blood_Type_request, location, mobile_Number, Age, case_Details, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($CON, $sql);
-    mysqli_stmt_bind_param($stmt, "sisssss", $user_id, $blood_type, $location, $mobile_Number,$Age, $case_Details, $status);
+    mysqli_stmt_bind_param($stmt, "sisssss", $user_id, $blood_Type_request, $location, $mobile_Number,$Age, $case_Details, $status);
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
