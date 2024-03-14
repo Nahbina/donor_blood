@@ -13,10 +13,9 @@ class LoginView extends GetView<LoginController> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 40,
-            ),
+            padding: MediaQuery.of(context).size.width > 600
+                ? const EdgeInsets.symmetric(horizontal: 200, vertical: 40)
+                : const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
             child: Form(
               key: controller.loginFormKey,
               child: Column(

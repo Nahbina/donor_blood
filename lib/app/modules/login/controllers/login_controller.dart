@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'package:donor_blood/app/routes/app_pages.dart';
-import 'package:donor_blood/app/utils/constants.dart';
-import 'package:donor_blood/app/utils/memory.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:donor_blood/app/routes/app_pages.dart';
+import 'package:donor_blood/app/utils/constants.dart';
+import 'package:donor_blood/app/utils/memory.dart';
 
 class LoginController extends GetxController {
-  // late final SharedPreferences prefs;
   final count = 0.obs;
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
@@ -17,7 +16,7 @@ class LoginController extends GetxController {
     count.value++;
   }
 
-  void onLogin() async {
+  Future<void> onLogin() async {
     if (loginFormKey.currentState!.validate()) {
       try {
         var url = Uri.http(ipAddress, 'donor_blood_api/auth/login.php');
@@ -27,27 +26,33 @@ class LoginController extends GetxController {
           'password': passwordController.text,
         });
 
-        var result = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          var result = jsonDecode(response.body);
 
-        if (result['success']) {
-          showCustomSnackBar(
-            message: result['message'],
-            isSuccess: true,
-          );
-          Memory.setToken(result['token']);
-          Memory.setRole(result['role']);
+          if (result['success'] != null && result['success']) {
+            showCustomSnackBar(
+              message: result['message'],
+              isSuccess: true,
+            );
+            Memory.setToken(result['token']);
+            Memory.setRole(result['role']);
 
-          var role = Memory.getRole();
-          var isAdmin = role == 'admin';
+            var role = Memory.getRole();
+            var isAdmin = role == 'admin';
 
-          if (isAdmin) {
-            Get.offAllNamed(Routes.ADMIN);
+            if (isAdmin) {
+              Get.offAllNamed(Routes.ADMIN);
+            } else {
+              Get.offAllNamed(Routes.MAIN);
+            }
           } else {
-            Get.offAllNamed(Routes.MAIN);
+            showCustomSnackBar(
+              message: result['message'] ?? 'Login failed',
+            );
           }
         } else {
           showCustomSnackBar(
-            message: result['message'],
+            message: 'Failed to connect to the server',
           );
         }
       } catch (e) {
@@ -56,5 +61,14 @@ class LoginController extends GetxController {
         );
       }
     }
+  }
+
+  void showCustomSnackBar({required String message, bool isSuccess = false}) {
+    Get.snackbar(
+      isSuccess ? 'Success' : 'Error',
+      message,
+      backgroundColor: isSuccess ? Colors.green : Colors.red,
+      colorText: Colors.white,
+    );
   }
 }

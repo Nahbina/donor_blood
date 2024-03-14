@@ -14,7 +14,7 @@ class RegisterController extends GetxController {
 
   final count = 0.obs;
 
-  void onRegister() async {
+  Future<void> onRegister() async {
     if (registerFormKey.currentState!.validate()) {
       try {
         var url = Uri.http(ipAddress, 'donor_blood_api/auth/register.php');
@@ -26,17 +26,22 @@ class RegisterController extends GetxController {
           'confirmpassword': confirmPasswordController.text,
         });
 
-        var result = jsonDecode(response.body);
-
-        if (result['success']) {
-          Get.back();
-          showCustomSnackBar(
-            message: result['message'],
-            isSuccess: true,
-          );
+        if (response.statusCode == 200) {
+          var result = jsonDecode(response.body);
+          if (result['success']) {
+            Get.back();
+            showCustomSnackBar(
+              message: result['message'],
+              isSuccess: true,
+            );
+          } else {
+            showCustomSnackBar(
+              message: result['message'],
+            );
+          }
         } else {
           showCustomSnackBar(
-            message: result['message'],
+            message: 'Something went wrong',
           );
         }
       } catch (e) {

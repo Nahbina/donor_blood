@@ -1,33 +1,119 @@
-import 'package:get/get.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 import '../../../utils/constants.dart';
+import '../../../utils/memory.dart';
+import '../../home/controllers/home_controller.dart';
 
 class DonorsController extends GetxController {
-  // Define a list to store donors
-  final donors = <Map<String, String>>[].obs;
+  var donorBloodType = TextEditingController();
+  var donorbirthDate = TextEditingController();
+  var donorlastDonationDate = TextEditingController();
+  var donorPhoneNumber = TextEditingController();
 
-  // Method to add a donor
-  void addDonor({
-    required String fullName,
-    required String phoneNumber,
-    required String bloodType,
-    required String birthDate,
-    required String lastDonationDate,
-  }) {
-    // Create a map to represent the donor
-    final donor = {
-      'fullName': fullName,
-      'phoneNumber': phoneNumber,
-      'bloodType': bloodType,
-      'birthDate': birthDate,
-      'lastDonationDate': lastDonationDate,
-    };
+  XFile? image;
+  Uint8List? imageBytes;
+  String? specializationId;
+  GlobalKey<FormState> donorformKey = GlobalKey<FormState>();
 
-    var url = Uri.http(ipAddress, 'donor_blood_api/addDonor.php');
+  final count = 0.obs;
 
-    donors.add(donor);
+  @override
+  void onInit() {
+    super.onInit();
+  }
 
-    // Print the added donor for verification (you can remove this in production)
-    print('Donor added: $donor');
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+  }
+
+  void addDonor() async {
+    try {
+      if (donorformKey.currentState!.validate()) {
+        if (imageBytes == null) {
+          showCustomSnackBar(
+            message: 'Please select image',
+          );
+          return;
+        }
+
+        var url = Uri.http(ipAddress, 'donor_blood_api/addDonor.php');
+
+        var request = http.MultipartRequest('POST', url);
+
+        request.fields['token'] = Memory.getToken() ?? '';
+        request.fields['blood_type'] = donorBloodType.text;
+        request.fields['birth_date'] = donorbirthDate.text;
+        request.fields['last_donation_date'] = donorlastDonationDate.text;
+        request.fields['phoneNumber'] = donorPhoneNumber.text;
+        request.files.add(http.MultipartFile.fromBytes(
+          'avatar',
+          imageBytes!,
+          filename: image!.name,
+        ));
+
+        request.files.add(http.MultipartFile.fromBytes(
+          'avatar',
+          imageBytes!,
+          filename: image!.name,
+        ));
+
+        var response = await request.send();
+        var data = await response.stream.bytesToString();
+        var result = jsonDecode(data);
+
+        if (result['success']) {
+          // donorNameController.clear();
+          donorBloodType.clear();
+          donorbirthDate.clear();
+          donorlastDonationDate.clear();
+          donorPhoneNumber.clear();
+
+          imageBytes = null;
+          image = null;
+          update();
+          Get.back();
+          showCustomSnackBar(
+            message: result['message'],
+            isSuccess: true,
+          );
+
+          Get.find<HomeController>().getDonors();
+        } else {
+          showCustomSnackBar(
+            message: result['message'],
+          );
+        }
+      }
+    } catch (e) {
+      showCustomSnackBar(
+        message: 'Something went wrong',
+      );
+    }
+  }
+
+  void pickImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile == null) {
+        return;
+      }
+      image = pickedFile;
+      imageBytes = await pickedFile.readAsBytes();
+      update();
+    } catch (e) {
+      print('Error picking image: $e');
+    }
   }
 }

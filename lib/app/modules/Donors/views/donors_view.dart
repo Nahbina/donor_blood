@@ -8,158 +8,152 @@ class DonorFormView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => DonorsController());
+    var controller = Get.find<DonorsController>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Donor'),
-        centerTitle: true,
         backgroundColor: Colors.red,
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: DonorForm(),
-      ),
-    );
-  }
-}
-
-class DonorForm extends StatefulWidget {
-  const DonorForm({Key? key}) : super(key: key);
-
-  @override
-  _DonorFormState createState() => _DonorFormState();
-}
-
-class _DonorFormState extends State<DonorForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _bloodTypeController = TextEditingController();
-  final TextEditingController _birthDateController = TextEditingController();
-  final TextEditingController _lastDonationDateController =
-      TextEditingController();
-  final TextEditingController _phoneNumberController =
-      TextEditingController(); // Added
-
-  String? _selectedBloodType; // Added
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _fullNameController,
-              decoration: InputDecoration(labelText: 'Full Name'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your full name';
-                }
-                return null;
-              },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 15,
+          ),
+          child: Form(
+            key: controller.donorformKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: controller.donorBloodType,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    labelText: 'Blood Type',
+                    hintText: 'Enter donor Blood Type',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter donor Blood Type';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.datetime,
+                  controller: controller.donorbirthDate,
+                  decoration: const InputDecoration(
+                    labelText: 'Birthdate',
+                    hintText: 'Enter donor Birthdate',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter donor birthdate';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.datetime,
+                  controller: controller.donorlastDonationDate,
+                  decoration: const InputDecoration(
+                    labelText: 'Last Donation Date',
+                    hintText: 'Enter donor last donation date',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter donor last donation date';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.phone,
+                  controller: controller.donorPhoneNumber,
+                  decoration: const InputDecoration(
+                    labelText: 'PhoneNumber',
+                    hintText: 'Enter donor phone number',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter donor phone number';
+                    }
+                    return null;
+                  },
+                ),
+                GetBuilder<DonorsController>(
+                  builder: (controller) => (controller.image == null ||
+                          controller.imageBytes == null)
+                      ? ElevatedButton(
+                          onPressed: controller.pickImage,
+                          child: const Text('Upload Image'),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red, // Set button color to red
+                            onPrimary:
+                                Colors.white, // Set button text color to white
+                          ),
+                        )
+                      : Stack(
+                          children: [
+                            Image.memory(
+                              controller.imageBytes!,
+                              height: 300,
+                            ),
+                            Positioned(
+                              right: 10,
+                              top: 10,
+                              child: Container(
+                                padding: const EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {
+                                    controller.image = null;
+                                    controller.imageBytes = null;
+                                    controller.update();
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: controller.addDonor,
+                  child: const Text('Submit'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red, // Set button color to red
+                    onPrimary: Colors.white, // Set button text color to white
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            TextFormField(
-              controller: _phoneNumberController, // Added
-              decoration: InputDecoration(labelText: 'Phone Number'), // Added
-              keyboardType: TextInputType.phone, // Added
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your phone number'; // Updated
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 20),
-            DropdownButtonFormField<String>(
-              value: _selectedBloodType,
-              decoration: InputDecoration(labelText: 'Blood Type'),
-              items: ['A', 'B', 'O']
-                  .map((type) => DropdownMenuItem(
-                        child: Text(type),
-                        value: type,
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedBloodType = value;
-                  _bloodTypeController.text = value ?? '';
-                });
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please select the blood type';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _birthDateController,
-              decoration: InputDecoration(labelText: 'Birth Date'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your birth date';
-                }
-                // You can add more specific validation logic here
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _lastDonationDateController,
-              decoration: InputDecoration(labelText: 'Last Donation Date'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter the last donation date';
-                }
-                // You can add more specific validation logic here
-                return null;
-              },
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  // Handle form submission here
-                  final String fullName = _fullNameController.text;
-                  final String bloodType = _bloodTypeController.text;
-                  final String birthDate = _birthDateController.text;
-                  final String lastDonationDate =
-                      _lastDonationDateController.text;
-                  final String phoneNumber =
-                      _phoneNumberController.text; // Added
-
-                  // Call your controller's method to add the donor
-                  Get.find<DonorsController>().addDonor(
-                    fullName: fullName,
-                    bloodType: bloodType,
-                    birthDate: birthDate,
-                    lastDonationDate: lastDonationDate,
-                    phoneNumber: phoneNumber, // Added
-                  );
-
-                  // Navigate back after adding donor
-                  Get.back();
-                }
-              },
-              child: Text('Submit'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red, // Set button color to red
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _fullNameController.dispose();
-    _bloodTypeController.dispose();
-    _birthDateController.dispose();
-    _lastDonationDateController.dispose();
-    _phoneNumberController.dispose(); // Added
-    super.dispose();
   }
 }

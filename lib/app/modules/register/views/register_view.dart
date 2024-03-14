@@ -12,10 +12,9 @@ class RegisterView extends GetView<RegisterController> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 40,
-            ),
+            padding: MediaQuery.of(context).size.width > 600
+                ? const EdgeInsets.symmetric(horizontal: 200, vertical: 40)
+                : const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
             child: Form(
               key: controller.registerFormKey,
               child: Column(
@@ -31,7 +30,7 @@ class RegisterView extends GetView<RegisterController> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
+                  const Text(
                     'Create Your Account',
                     style: TextStyle(
                       fontSize: 24,
@@ -52,7 +51,7 @@ class RegisterView extends GetView<RegisterController> {
                   const SizedBox(height: 40),
                   TextFormField(
                     controller: controller.fullNameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Full Name',
                       hintText: 'Enter your full name',
                       border: OutlineInputBorder(),
@@ -67,7 +66,7 @@ class RegisterView extends GetView<RegisterController> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: controller.emailController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Email Address',
                       hintText: 'Enter your email address',
                       border: OutlineInputBorder(),
@@ -85,7 +84,7 @@ class RegisterView extends GetView<RegisterController> {
                   TextFormField(
                     controller: controller.passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Password',
                       hintText: 'Enter your password',
                       border: OutlineInputBorder(),
@@ -103,7 +102,7 @@ class RegisterView extends GetView<RegisterController> {
                   TextFormField(
                     controller: controller.confirmPasswordController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Confirm Password',
                       hintText: 'Re-enter your password',
                       border: OutlineInputBorder(),
@@ -121,12 +120,15 @@ class RegisterView extends GetView<RegisterController> {
                   ElevatedButton(
                     onPressed: controller.onRegister,
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 212, 16, 2),
+                      primary: const Color.fromARGB(255, 212, 16, 2),
                       padding: const EdgeInsets.symmetric(vertical: 15),
                     ),
-                    child: Text(
-                      'Register',
-                      style: TextStyle(fontSize: 18),
+                    child: const SizedBox(
+                      height: 30,
+                      child: Text(
+                        'Register',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),

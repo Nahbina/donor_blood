@@ -11,6 +11,9 @@ abstract class Routes {
   static const PROFILE = _Paths.PROFILE;
   static const DONORS = _Paths.DONORS;
   static const REQUEST = _Paths.REQUEST;
+  static const DONORS_DETAIL = _Paths.DONORS_DETAIL;
+  static const EVENT = _Paths.EVENT;
+  static const VIEW_EVENT = _Paths.VIEW_EVENT;
 }
 
 abstract class _Paths {
@@ -23,4 +26,7 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const DONORS = '/donors';
   static const REQUEST = '/request';
+  static const DONORS_DETAIL = '/donors-detail';
+  static const EVENT = '/event';
+  static const VIEW_EVENT = '/view-event';
 }

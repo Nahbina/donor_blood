@@ -1,30 +1,31 @@
 // To parse this JSON data, do
 //
-//     final donors = donorsFromJson(jsonString);
+//     final donor = donorFromJson(jsonString);
 
 import 'dart:convert';
 
-Donors donorsFromJson(String str) => Donors.fromJson(json.decode(str));
+Donor donorFromJson(String str) => Donor.fromJson(json.decode(str));
 
-String donorsToJson(Donors data) => json.encode(data.toJson());
+String donorToJson(Donor data) => json.encode(data.toJson());
 
-class Donors {
+class Donor {
   final bool? success;
   final String? message;
-  final List<Donor>? donors;
+  final List<DonorElement>? donors;
 
-  Donors({
+  Donor({
     this.success,
     this.message,
     this.donors,
   });
 
-  factory Donors.fromJson(Map<String, dynamic> json) => Donors(
+  factory Donor.fromJson(Map<String, dynamic> json) => Donor(
         success: json["success"],
         message: json["message"],
         donors: json["donors"] == null
             ? []
-            : List<Donor>.from(json["donors"]!.map((x) => Donor.fromJson(x))),
+            : List<DonorElement>.from(
+                json["donors"]!.map((x) => DonorElement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -36,50 +37,49 @@ class Donors {
       };
 }
 
-class Donor {
+class DonorElement {
   final int? donorId;
-  final String? fullName;
   final int? userId;
   final String? bloodType;
   final DateTime? birthDate;
-  final DateTime? lastDonationDate;
+  final String? lastDonationDate;
   final String? avatar;
   final String? phoneNumber;
+  final String? fullName;
 
-  Donor({
+  DonorElement({
     this.donorId,
-    this.fullName,
     this.userId,
     this.bloodType,
     this.birthDate,
     this.lastDonationDate,
     this.avatar,
     this.phoneNumber,
+    this.fullName,
   });
 
-  factory Donor.fromJson(Map<String, dynamic> json) => Donor(
+  factory DonorElement.fromJson(Map<String, dynamic> json) => DonorElement(
         donorId: json["donor_id"],
-        fullName: json["full_name"],
         userId: json["user_id"],
         bloodType: json["blood_type"],
         birthDate: json["birth_date"] == null
             ? null
             : DateTime.parse(json["birth_date"]),
-        lastDonationDate: json["last_donation_date"] == null
-            ? null
-            : DateTime.parse(json["last_donation_date"]),
+        lastDonationDate: json["last_donation_date"],
         avatar: json["avatar"],
         phoneNumber: json["phoneNumber"],
+        fullName: json["full_name"],
       );
 
   Map<String, dynamic> toJson() => {
         "donor_id": donorId,
-        "full_name": fullName,
         "user_id": userId,
         "blood_type": bloodType,
-        "birth_date": birthDate?.toIso8601String(),
-        "last_donation_date": lastDonationDate?.toIso8601String(),
+        "birth_date":
+            "${birthDate!.year.toString().padLeft(4, '0')}-${birthDate!.month.toString().padLeft(2, '0')}-${birthDate!.day.toString().padLeft(2, '0')}",
+        "last_donation_date": lastDonationDate,
         "avatar": avatar,
         "phoneNumber": phoneNumber,
+        "full_name": fullName,
       };
 }

@@ -2,12 +2,18 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../modules/Donors/bindings/donors_binding.dart';
 import '../modules/Donors/views/donors_view.dart';
+import '../modules/Donors_detail/bindings/donors_detail_binding.dart';
+import '../modules/Donors_detail/views/donors_detail_view.dart';
+import '../modules/Event/bindings/event_binding.dart';
+import '../modules/Event/views/event_view.dart';
 import '../modules/Main/bindings/main_binding.dart';
 import '../modules/Main/views/main_view.dart';
 import '../modules/Profile/bindings/profile_binding.dart';
 import '../modules/Profile/views/profile_view.dart';
 import '../modules/Request/bindings/request_binding.dart';
 import '../modules/Request/views/request_view.dart';
+import '../modules/ViewEvent/bindings/view_event_binding.dart';
+import '../modules/ViewEvent/views/view_event_view.dart';
 import '../modules/admin/bindings/admin_binding.dart';
 import '../modules/admin/views/admin_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -42,7 +48,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADMIN,
-      page: () => const AdminView(),
+      page: () => AdminView(),
       binding: AdminBinding(),
     ),
     GetPage(
@@ -52,7 +58,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PROFILE,
-      page: () => const ProfileView(),
+      page: () => ProfileView(),
       binding: ProfileBinding(),
     ),
     GetPage(
@@ -62,8 +68,23 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.REQUEST,
-      page: () => const RequestFormView(),
+      page: () => RequestFormView(),
       binding: RequestBinding(),
+    ),
+    GetPage(
+      name: _Paths.DONORS_DETAIL,
+      page: () => const DonorsDetailView(),
+      binding: DonorsDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.EVENT,
+      page: () => EventView(),
+      binding: EventBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIEW_EVENT,
+      page: () => ViewEventView(),
+      binding: ViewEventBinding(),
     ),
   ];
 }
