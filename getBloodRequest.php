@@ -1,5 +1,5 @@
 <?php
-/// Include database connection
+// Include database connection
 include "./database/database_connection.php";
 
 // Include authentication helper functions
@@ -22,15 +22,6 @@ if ($userId == null) {
     echo json_encode([
         "success" => false,
         "message" => "Unauthorized access!"
-    ]);
-    die();
-}
-
-// Check if the user is a donor
-if (!isDonor($CON, $userId)) {
-    echo json_encode([
-        "success" => false,
-        "message" => "User is not a donor!"
     ]);
     die();
 }
@@ -63,6 +54,4 @@ if ($result) {
 
 // Close the statement
 mysqli_stmt_close($stmt);
-?>
-
 ?>

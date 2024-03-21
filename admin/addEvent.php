@@ -1,9 +1,9 @@
 <?php
 // Include database connection
-include "./database/database_connection.php";
+include "../database/database_connection.php";
 
 // Include authentication helper functions
-include "./helpers/auth.php";
+include "../helpers/auth.php";
 
 // Check if token is provided in the request
 if (!isset($_POST['token'])) {

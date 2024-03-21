@@ -18,14 +18,20 @@ if (!isset($_POST['token'])) {
 $token = $_POST['token'];
 
 // Check if the user associated with the token is authenticated and authorized to retrieve events
-if (!getUserId($CON, $token) || !isAdmin($CON, $token)) {
+//if (!getUserId($CON, $token) || !isAdmin($CON, $token)) {
+    //echo json_encode([
+      //  "success" => false,
+        //"message" => "Unauthorized access!"
+    //]);
+    //die();
+//}
+if (!getUserId($CON, $token)) {
     echo json_encode([
         "success" => false,
         "message" => "Unauthorized access!"
     ]);
     die();
 }
-
 // Retrieve events from the database
 $sql = "SELECT * FROM events";
 $result = mysqli_query($CON, $sql);
