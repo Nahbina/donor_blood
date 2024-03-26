@@ -4,7 +4,6 @@ include "./database/database_connection.php";
 
 // Include authentication helper functions
 include "./helpers/auth.php";
-include "./helpers/notify.php"; // Include notification helper functions
 
 // Check if token is provided in the request
 if (!isset($_POST['token'])) {
@@ -38,27 +37,38 @@ if (!isset($_POST['request_id'])) {
 
 $requestId = $_POST['request_id'];
 
-// Prepare the SQL statement to update the status of the blood request
-$sql = "UPDATE blood_requests SET status = 'accepted' WHERE donor_id = ? AND request_id = ?";
+// Check if the user associated with the token is the donor for this request
+$sql = "SELECT * FROM blood_requests WHERE donor_id = ? AND request_id = ?";
 $stmt = mysqli_prepare($CON, $sql);
-
-// Bind parameters and execute the statement
 mysqli_stmt_bind_param($stmt, "ii", $userId, $requestId);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$row = mysqli_fetch_assoc($result);
+
+if (!$row) {
+    echo json_encode([
+        "success" => false,
+        "message" => "You are not authorized to cancel this request!"
+    ]);
+    die();
+}
+
+// Prepare the SQL statement to cancel the blood request
+$sql = "UPDATE blood_requests SET status = 'cancelled' WHERE request_id = ?";
+$stmt = mysqli_prepare($CON, $sql);
+mysqli_stmt_bind_param($stmt, "i", $requestId);
 mysqli_stmt_execute($stmt);
 
 // Check if the update was successful
 if (mysqli_stmt_affected_rows($stmt) > 0) {
-    // Send notification to the user who sent the request
-    sendNotification($userId, $requestId, "Your blood request has been accepted.");
-
     echo json_encode([
         "success" => true,
-        "message" => "Blood request accepted successfully!"
+        "message" => "Blood request cancelled successfully!"
     ]);
 } else {
     echo json_encode([
         "success" => false,
-        "message" => "Failed to accept blood request or request not found!"
+        "message" => "Failed to cancel blood request or request not found!"
     ]);
 }
 
