@@ -1,54 +1,103 @@
 import 'package:flutter/material.dart';
 
-class EventView extends StatelessWidget {
+class EventView extends StatefulWidget {
   const EventView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return PaginatedDataTable(
-      columns: const [
-        DataColumn(label: Text('Product')),
-        DataColumn(label: Text('ItemID')),
-        DataColumn(label: Text('Supplier')),
-        DataColumn(label: Text('QTY')),
-        DataColumn(label: Text('Customer')),
-        DataColumn(label: Text('Address')),
-        DataColumn(label: Text('Price')),
-        DataColumn(label: Text('Status')),
-        DataColumn(label: Text('More')),
-      ],
-      source: MyDataTableSource(),
-      rowsPerPage: 5,
-      horizontalMargin: 0.0,
-    );
-  }
+  State<EventView> createState() => _EventViewState();
 }
 
-class MyDataTableSource extends DataTableSource {
+class _EventViewState extends State<EventView> {
   @override
-  DataRow getRow(int index) {
-    return const DataRow(cells: [
-      DataCell(Text('1')),
-      DataCell(SizedBox(
-        width: double.infinity,
-        child: Text('Led Strip Lights\nGovee -378695'),
-      )),
-      DataCell(Text('3')),
-      DataCell(Text('05.11.21')),
-      DataCell(Text('85\$')),
-      DataCell(Text('30\$')),
-      DataCell(Text('John Marks')),
-      DataCell(Text('United States')),
-      DataCell(Text('In Transit')),
-    ]);
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.all(50),
+                child: Table(
+                  defaultColumnWidth: FixedColumnWidth(200.0),
+                  border: TableBorder.all(
+                    color: Colors.black,
+                    style: BorderStyle.solid,
+                    width: 1,
+                  ),
+                  children: const [
+                    TableRow(
+                      children: [
+                        Column(
+                          children: [
+                            Text('EventId', style: TextStyle(fontSize: 20.0)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('EventName', style: TextStyle(fontSize: 20.0)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('EventDate', style: TextStyle(fontSize: 20.0)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('EventLocation',
+                                style: TextStyle(fontSize: 20.0)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('EventTime', style: TextStyle(fontSize: 20.0)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('EventDescription',
+                                style: TextStyle(fontSize: 20.0)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        Column(children: [Text('Javatpoint')]),
+                        Column(children: [Text('Flutter')]),
+                        Column(children: [Text('5*')]),
+                        Column(children: [Text('Javatpoint')]),
+                        Column(children: [Text('Flutter')]),
+                        Column(children: [Text('5*')]),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        Column(children: [Text('Javatpoint')]),
+                        Column(children: [Text('MySQL')]),
+                        Column(children: [Text('5*')]),
+                        Column(children: [Text('Javatpoint')]),
+                        Column(children: [Text('Flutter')]),
+                        Column(children: [Text('5*')]),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        Column(children: [Text('Javatpoint')]),
+                        Column(children: [Text('ReactJS')]),
+                        Column(children: [Text('5*')]),
+                        Column(children: [Text('Javatpoint')]),
+                        Column(children: [Text('Flutter')]),
+                        Column(children: [Text('5*')]),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
-
-  @override
-  int get rowCount => 5;
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get selectedRowCount => 0;
 }

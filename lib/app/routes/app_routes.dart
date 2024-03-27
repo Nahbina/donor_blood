@@ -14,6 +14,8 @@ abstract class Routes {
   static const DONORS_DETAIL = _Paths.DONORS_DETAIL;
   static const EVENT = _Paths.EVENT;
   static const VIEW_EVENT = _Paths.VIEW_EVENT;
+  static const PAYMENT = _Paths.PAYMENT;
+  static const NOTIFICATIONS = _Paths.NOTIFICATIONS;
 }
 
 abstract class _Paths {
@@ -29,4 +31,6 @@ abstract class _Paths {
   static const DONORS_DETAIL = '/donors-detail';
   static const EVENT = '/event';
   static const VIEW_EVENT = '/view-event';
+  static const PAYMENT = '/payment';
+  static const NOTIFICATIONS = '/notifications';
 }

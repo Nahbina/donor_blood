@@ -38,21 +38,29 @@ class RequestFormView extends StatelessWidget {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            // Perform action when accepting the request
-                            //_requestController.acceptRequest(request.requestId!);
-                          },
-                          child: Text('Accept'),
-                        ),
-                        SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            // Perform action when canceling the request
-                            // _requestController.cancelRequest(request.requestId!);
-                          },
-                          child: Text('Cancel'),
-                        ),
+                        if (request.status != 'accepted' &&
+                            request.status != 'canceled')
+                          TextButton(
+                            onPressed: () {
+                              // Call acceptRequest with the request ID
+                              _requestController
+                                  .acceptRequest(request.requestId.toString());
+                            },
+                            child: Text('Accept'),
+                          ),
+                        if (request.status != 'accepted' &&
+                            request.status != 'canceled')
+                          SizedBox(width: 8),
+                        if (request.status != 'accepted' &&
+                            request.status != 'canceled')
+                          TextButton(
+                            onPressed: () {
+                              // Call cancelRequest with the request ID
+                              _requestController
+                                  .cancelRequest(request.requestId.toString());
+                            },
+                            child: Text('Cancel'),
+                          ),
                       ],
                     ),
                   ),

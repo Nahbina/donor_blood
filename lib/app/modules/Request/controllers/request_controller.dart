@@ -73,4 +73,79 @@ class RequestController extends GetxController {
       );
     }
   }
+
+  void acceptRequest(String requestId) async {
+    try {
+      var url = Uri.http(ipAddress, 'donor_blood_api/acceptRequest.php');
+
+      var response = await http.post(
+        url,
+        body: {
+          'token': await Memory.getToken(),
+          'request_id': requestId,
+        },
+      );
+
+      var result = jsonDecode(response.body);
+
+      if (result['success']) {
+        Get.back();
+        showCustomSnackBar(
+          message: result['message'],
+          isSuccess: true,
+        );
+        await getBloodRequests(); // Assuming getBloodRequests refreshes the requests list
+      } else {
+        showCustomSnackBar(
+          message: result['message'],
+        );
+      }
+    } catch (e) {
+      showCustomSnackBar(
+        message: 'Something went wrong',
+      );
+    }
+  }
+
+  void cancelRequest(String requestId) async {
+    try {
+      var url = Uri.http(ipAddress, 'donor_blood_api/cancelRequest.php');
+
+      var response = await http.post(
+        url,
+        body: {
+          'token': await Memory.getToken(),
+          'request_id': requestId,
+        },
+      );
+
+      var result = jsonDecode(response.body);
+
+      if (result['success']) {
+        // Remove the canceled request from the list
+        bloodRequests.removeWhere(
+            (request) => request.requestId.toString() == requestId);
+
+        // Notify UI about the change
+        update();
+
+        Get.back();
+
+        showCustomSnackBar(
+          message: result['message'],
+          isSuccess: true,
+        );
+
+        await getBloodRequests(); // Assuming getBloodRequests refreshes the requests list
+      } else {
+        showCustomSnackBar(
+          message: result['message'],
+        );
+      }
+    } catch (e) {
+      showCustomSnackBar(
+        message: 'Something went wrong',
+      );
+    }
+  }
 }

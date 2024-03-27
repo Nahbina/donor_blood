@@ -20,24 +20,43 @@ class ViewEventView extends StatelessWidget {
       ),
       body: event != null // Check if event is provided
           ? _buildEventDetails(
-              event!) // If event is provided, build event details
+              context, event!) // If event is provided, build event details
           : _buildEventListView(), // If event is not provided, build event list view
     );
   }
 
-  Widget _buildEventDetails(Event event) {
-    return ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        Text(
-          event.eventName ?? '',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        SizedBox(height: 10),
-        Text('Date: ${event.eventDate?.toString() ?? ''}'),
-        Text('Location: ${event.eventLocation ?? ''}'),
-        Text('Time: ${event.eventTime ?? ''}'),
-      ],
+  Widget _buildEventDetails(BuildContext context, Event event) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            event.eventName ?? '',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
+          SizedBox(height: 20),
+          _buildEventDetailRow('Date', event.eventDate?.toString() ?? ''),
+          _buildEventDetailRow('Location', event.eventLocation ?? ''),
+          _buildEventDetailRow('Time', event.eventTime ?? ''),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEventDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Text(
+            label + ':',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(width: 10),
+          Text(value),
+        ],
+      ),
     );
   }
 
@@ -53,25 +72,33 @@ class ViewEventView extends StatelessWidget {
             itemCount: controller.events.length,
             itemBuilder: (context, index) {
               Event event = controller.events[index];
-              return ListTile(
-                title: Text(event.eventName ?? ''),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Date: ${event.eventDate?.toString() ?? ''}'),
-                    Text('Location: ${event.eventLocation ?? ''}'),
-                    Text('Time: ${event.eventTime ?? ''}'),
-                  ],
-                ),
-                trailing: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the same view event page with the selected event
-                    Get.to(() => ViewEventView(event: event));
-                  },
-                  child: Text('View Event'),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red, // Set button color to red
-                    onPrimary: Colors.white, // Set button text color to white
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: ListTile(
+                  title: Text(
+                    event.eventName ?? '',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildEventDetailRow(
+                          'Date', event.eventDate?.toString() ?? ''),
+                      _buildEventDetailRow(
+                          'Location', event.eventLocation ?? ''),
+                      _buildEventDetailRow('Time', event.eventTime ?? ''),
+                    ],
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+                      // Navigate to the same view event page with the selected event
+                      Get.to(() => ViewEventView(event: event));
+                    },
+                    child: Text('View Event'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red, // Set button color to red
+                      onPrimary: Colors.white, // Set button text color to white
+                    ),
                   ),
                 ),
               );

@@ -1,3 +1,4 @@
+import 'package:donor_blood/app/modules/Donors_detail/views/donors_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
@@ -5,8 +6,32 @@ import '../../../utils/memory.dart';
 import '../../Event/views/event_view.dart';
 import '../controllers/admin_controller.dart';
 
-class AdminView extends GetView<AdminController> {
+class AdminView extends StatefulWidget {
   const AdminView({Key? key}) : super(key: key);
+
+  @override
+  _AdminViewState createState() => _AdminViewState();
+}
+
+class _AdminViewState extends State<AdminView> {
+  Widget _currentView = Center(
+    child: Text(
+      'AdminView is working',
+      style: TextStyle(fontSize: 20),
+    ),
+  );
+
+  void _openEventPage() {
+    setState(() {
+      _currentView = EventView();
+    });
+  }
+
+  void _openDonorPage() {
+    setState(() {
+      _currentView = DonorsDetailView();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +57,9 @@ class AdminView extends GetView<AdminController> {
                   },
                 ),
                 ListTile(
-                    title: Text('Event'),
-                    onTap: () {
-                      Get.to(EventView());
-                    }),
+                  title: Text('Event'),
+                  onTap: _openEventPage,
+                ),
                 ListTile(
                   title: Text('Donors'),
                   onTap: () {
@@ -101,12 +125,7 @@ class AdminView extends GetView<AdminController> {
             ),
           ),
           Expanded(
-            child: Center(
-              child: Text(
-                'AdminView is working',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
+            child: _currentView,
           ),
         ],
       ),

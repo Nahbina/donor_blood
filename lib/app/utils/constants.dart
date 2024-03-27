@@ -2,11 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 const ipAddress = '192.168.18.9';
-// const ipAddress = '172.16.16.95';
-// const ipAddress = '172.16.17.156';
-// const ipAddress = '172.25.5.160';
-// const ipAddress = '192.168.1.73';
-// const ipAddress = ' 172.25.6.84';
+// const ipAddress = '192.168.30.143';
 
 MaterialColor primaryColor = Colors.red;
 var getImageUrl = (imageUrl) {

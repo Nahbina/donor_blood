@@ -8,6 +8,8 @@ import '../modules/Event/bindings/event_binding.dart';
 import '../modules/Event/views/event_view.dart';
 import '../modules/Main/bindings/main_binding.dart';
 import '../modules/Main/views/main_view.dart';
+import '../modules/Notifications/bindings/notifications_binding.dart';
+import '../modules/Notifications/views/notifications_view.dart';
 import '../modules/Profile/bindings/profile_binding.dart';
 import '../modules/Profile/views/profile_view.dart';
 import '../modules/Request/bindings/request_binding.dart';
@@ -20,6 +22,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/payment/bindings/payment_binding.dart';
+import '../modules/payment/views/payment_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 
@@ -85,6 +89,16 @@ class AppPages {
       name: _Paths.VIEW_EVENT,
       page: () => ViewEventView(),
       binding: ViewEventBinding(),
+    ),
+    GetPage(
+      name: _Paths.PAYMENT,
+      page: () => const PaymentView(),
+      binding: PaymentBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOTIFICATIONS,
+      page: () => const NotificationsView(),
+      binding: NotificationsBinding(),
     ),
   ];
 }
