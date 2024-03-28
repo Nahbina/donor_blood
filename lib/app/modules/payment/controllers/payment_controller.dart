@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:donor_blood/app/models/User.dart';
 import 'package:get/get.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +29,6 @@ class PaymentController extends GetxController {
     try {
       PaymentConfig config = PaymentConfig(
         productName: "Donation",
-        // amount: int.parse(doctor.consultationCharge??'0')*100,
         amount: 100 * 100,
         productIdentity: userId,
       );
@@ -64,6 +61,4 @@ class PaymentController extends GetxController {
       showCustomSnackBar(message: e.toString());
     }
   }
-
-  void increment() => count.value++;
 }

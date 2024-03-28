@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/event_controller.dart';
+import '../../../models/Event.dart';
 
 class EventView extends StatefulWidget {
   const EventView({Key? key}) : super(key: key);
@@ -8,95 +11,68 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
+  final EventController _eventController = Get.put(EventController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.all(50),
-                child: Table(
-                  defaultColumnWidth: FixedColumnWidth(200.0),
-                  border: TableBorder.all(
-                    color: Colors.black,
-                    style: BorderStyle.solid,
-                    width: 1,
-                  ),
-                  children: const [
-                    TableRow(
-                      children: [
-                        Column(
-                          children: [
-                            Text('EventId', style: TextStyle(fontSize: 20.0)),
+        child: Obx(() {
+          if (_eventController.events.isEmpty) {
+            return const CircularProgressIndicator();
+          } else {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Event Name')),
+                  DataColumn(label: Text('Event Date')),
+                  DataColumn(label: Text('Event Location')),
+                  DataColumn(label: Text('Event Time')),
+                  DataColumn(label: Text('Event Description')),
+                  DataColumn(label: Text('Actions')),
+                ],
+                rows: _eventController.events
+                    .map((event) => DataRow(
+                          cells: [
+                            DataCell(Text(event.eventName ?? '')),
+                            DataCell(Text(event.eventDate?.toString() ?? '')),
+                            DataCell(Text(event.eventLocation ?? '')),
+                            DataCell(Text(event.eventTime ?? '')),
+                            DataCell(Text(event.eventDescription ?? '')),
+                            DataCell(
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      _eventController
+                                          .editEvent(event.eventId!);
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      _eventController
+                                          .deleteEvent(event.eventId!);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
-                        ),
-                        Column(
-                          children: [
-                            Text('EventName', style: TextStyle(fontSize: 20.0)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text('EventDate', style: TextStyle(fontSize: 20.0)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text('EventLocation',
-                                style: TextStyle(fontSize: 20.0)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text('EventTime', style: TextStyle(fontSize: 20.0)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text('EventDescription',
-                                style: TextStyle(fontSize: 20.0)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        Column(children: [Text('Javatpoint')]),
-                        Column(children: [Text('Flutter')]),
-                        Column(children: [Text('5*')]),
-                        Column(children: [Text('Javatpoint')]),
-                        Column(children: [Text('Flutter')]),
-                        Column(children: [Text('5*')]),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        Column(children: [Text('Javatpoint')]),
-                        Column(children: [Text('MySQL')]),
-                        Column(children: [Text('5*')]),
-                        Column(children: [Text('Javatpoint')]),
-                        Column(children: [Text('Flutter')]),
-                        Column(children: [Text('5*')]),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        Column(children: [Text('Javatpoint')]),
-                        Column(children: [Text('ReactJS')]),
-                        Column(children: [Text('5*')]),
-                        Column(children: [Text('Javatpoint')]),
-                        Column(children: [Text('Flutter')]),
-                        Column(children: [Text('5*')]),
-                      ],
-                    ),
-                  ],
-                ),
+                        ))
+                    .toList(),
               ),
-            ),
-          ],
-        ),
+            );
+          }
+        }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to add event screen
+        },
+        child: Icon(Icons.add),
       ),
     );
   }

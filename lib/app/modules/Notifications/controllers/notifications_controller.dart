@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/notifications.dart';
@@ -8,63 +7,72 @@ import '../../../utils/memory.dart';
 
 class NotificationsController extends GetxController {
   Notifications? notificationResponse;
-
+  String? requestId;
   final count = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
-    getNotification();
+    // Example of setting the requestId before calling getNotification()
+    setRequestId('requestId');
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
+  void setRequestId(String id) {
+    requestId = id; // Assign the parameter value to the class member variable
+    getNotification(); // Call getNotification() after setting the requestId
   }
 
   Future<void> getNotification() async {
     try {
+      // Ensure requestId is not null
+      if (requestId == null) {
+        print('Request ID is null');
+        return;
+      }
+
       var url = Uri.http(ipAddress, 'donor_blood_api/getNotifications.php');
       var response = await http.post(url, body: {
-        "token": Memory.getToken(),
-        "request_id": 'requestId',
+        "token": Memory.getToken() ?? '',
+        "request_id": requestId!,
       });
 
       print('Response Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
-        notificationResponse =
-            Notifications.fromJson(jsonDecode(response.body));
+        var responseData = jsonDecode(response.body);
 
-        print('Parsed Notification Response: $notificationResponse');
+        // Check if the response contains notifications
+        if (responseData['success'] == true &&
+            responseData.containsKey('notifications')) {
+          List<dynamic> notificationsData = responseData['notifications'];
 
-        if (notificationResponse!.success ?? false) {
-          // Handle successful response here
+          // Map each notification to Notifications model
+          List<Notification> notifications = notificationsData
+              .map((notification) => Notification.fromJson(notification))
+              .toList();
+
+          // Update notificationResponse with fetched notifications
+          notificationResponse = Notifications(
+            success: true,
+            message: responseData['message'],
+            notifications: notifications,
+          );
           update();
         } else {
-          // Handle unsuccessful response here
-          showCustomSnackBar(
-            message: notificationResponse!.message ?? '',
+          // Handle case where no notifications are found
+          notificationResponse = Notifications(
+            success: false,
+            message: 'No notifications found.',
+            notifications: [],
           );
+          update();
         }
       } else {
-        // Handle HTTP error response here
-        showCustomSnackBar(
-          message: 'Failed to fetch notifications',
-        );
+        print('Failed to fetch notifications');
       }
     } catch (e) {
-      // Handle other errors here
-      print(e);
-      showCustomSnackBar(
-        message: 'Something went wrong',
-      );
+      print('Something went wrong: $e');
     }
   }
 

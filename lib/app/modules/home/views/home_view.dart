@@ -90,7 +90,9 @@ class HomeView extends GetView<HomeController> {
                           }),
                           _buildFunctionalityContainer(
                               context, 'Donation', Icons.favorite, () {
-                            Get.to(() => PaymentView());
+                            Get.to(
+                              () => PaymentView(userId: ""),
+                            );
                           }),
                         ],
                       ),

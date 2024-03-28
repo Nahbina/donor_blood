@@ -92,12 +92,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PAYMENT,
-      page: () => const PaymentView(),
+      page: () => PaymentView(userId: ""),
       binding: PaymentBinding(),
     ),
     GetPage(
       name: _Paths.NOTIFICATIONS,
-      page: () => const NotificationsView(),
+      page: () => NotificationsView(),
       binding: NotificationsBinding(),
     ),
   ];

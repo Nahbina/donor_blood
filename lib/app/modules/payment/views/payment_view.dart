@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/payment_controller.dart';
 
-class PaymentView extends GetView<PaymentController> {
-  const PaymentView({Key? key}) : super(key: key);
+class PaymentView extends StatelessWidget {
+  final String userId; // Define userId variable
+
+  const PaymentView({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Initialize PaymentController when the view is built
+    Get.put(PaymentController());
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('PaymentView'),
-          backgroundColor: Colors.red,
-          centerTitle: true,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      appBar: AppBar(
+        title: const Text('Donation'),
+        backgroundColor: Colors.red,
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Amount',
@@ -27,7 +33,6 @@ class PaymentView extends GetView<PaymentController> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter the amount';
                 }
-                // You can add additional validation logic here if required
                 return null;
               },
             ),
@@ -42,7 +47,6 @@ class PaymentView extends GetView<PaymentController> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter the details';
                 }
-                // You can add additional validation logic here if required
                 return null;
               },
             ),
@@ -55,7 +59,10 @@ class PaymentView extends GetView<PaymentController> {
                   vertical: 20,
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                // Call makePayment from the initialized PaymentController
+                Get.find<PaymentController>().makePayment(userId);
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -76,8 +83,10 @@ class PaymentView extends GetView<PaymentController> {
                 ],
               ),
             ),
-          ]),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }
 

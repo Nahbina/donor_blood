@@ -1,29 +1,28 @@
 // To parse this JSON data, do
 //
-//     final userResponse = userResponseFromJson(jsonString);
+//     final user = userFromJson(jsonString);
 
 import 'dart:convert';
 
-UserResponse userResponseFromJson(String str) =>
-    UserResponse.fromJson(json.decode(str));
+User userFromJson(String str) => User.fromJson(json.decode(str));
 
-String userResponseToJson(UserResponse data) => json.encode(data.toJson());
+String userToJson(User data) => json.encode(data.toJson());
 
-class UserResponse {
+class User {
   final bool? success;
   final String? message;
-  final User? user;
+  final UserClass? user;
 
-  UserResponse({
+  User({
     this.success,
     this.message,
     this.user,
   });
 
-  factory UserResponse.fromJson(Map<String, dynamic> json) => UserResponse(
+  factory User.fromJson(Map<String, dynamic> json) => User(
         success: json["success"],
         message: json["message"],
-        user: json["user"] == null ? null : User.fromJson(json["user"]),
+        user: json["user"] == null ? null : UserClass.fromJson(json["user"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -33,34 +32,30 @@ class UserResponse {
       };
 }
 
-class User {
+class UserClass {
   final String? userId;
-  final String? email;
   final String? fullName;
+  final String? email;
   final String? role;
-  final String? address;
 
-  User({
+  UserClass({
     this.userId,
-    this.email,
     this.fullName,
+    this.email,
     this.role,
-    this.address,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory UserClass.fromJson(Map<String, dynamic> json) => UserClass(
         userId: json["user_id"],
-        email: json["email"],
         fullName: json["full_name"],
+        email: json["email"],
         role: json["role"],
-        address: json["address"],
       );
 
   Map<String, dynamic> toJson() => {
         "user_id": userId,
-        "email": email,
         "full_name": fullName,
+        "email": email,
         "role": role,
-        "address": address,
       };
 }

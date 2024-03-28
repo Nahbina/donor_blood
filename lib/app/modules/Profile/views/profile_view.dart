@@ -5,136 +5,136 @@ import '../../../routes/app_pages.dart';
 import '../../../utils/memory.dart';
 import '../controllers/profile_controller.dart';
 
-class ProfileView extends StatefulWidget {
-  @override
-  _ProfileViewState createState() => _ProfileViewState();
-}
-
-class _ProfileViewState extends State<ProfileView> {
-  late ProfileController _profileController;
-
-  @override
-  void initState() {
-    super.initState();
-    _profileController = Get.put(ProfileController());
-  }
+class ProfileView extends GetView<ProfileController> {
+  const ProfileView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Get.put(ProfileController());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
-        backgroundColor: Colors.red,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage(
-                    'assets/images/logo.png'), // Replace with actual user's profile picture
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'User Name', // Replace with actual user's name
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'user@example.com', // Replace with actual user's email
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Blood Type: O+', // Replace with actual user's blood type
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              ListTile(
-                title: const Text(
-                  'Edit profile',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  // Add logic for updating status
-                },
-              ),
-              ListTile(
-                title: const Text(
-                  'Donation history',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  // Add logic for updating status
-                },
-              ),
-              ListTile(
-                title: const Text(
-                  'My Status',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  // Add logic for updating status
-                },
-              ),
-              ListTile(
-                title: const Text(
-                  'Change Password',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  // Navigate to the change password page
-                  Get.to(CHANGE_PASSWORD());
-                },
-              ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Logout'),
-                        content: const Text('Are you sure you want to logout?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Memory.clear();
-                              Get.offAllNamed(Routes.LOGIN);
-                            },
-                            child: const Text('Yes'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Text('No'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: ListTile(
-                  leading: const Text(
-                    'Logout',
-                    style: TextStyle(
-                      fontSize: 20,
+      body: GetBuilder<ProfileController>(
+        builder: (controller) {
+          if (controller.user == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final user = controller.user!.user;
+
+          return Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 50),
+                CircleAvatar(
+                  radius: 75,
+                  child: Text(
+                    user?.fullName?[0] ?? 'U',
+                    style: const TextStyle(
+                      fontSize: 50,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  trailing: const Icon(Icons.arrow_forward_ios),
                 ),
-              ),
-            ],
-          ),
-        ),
+                const SizedBox(height: 20),
+                Text(
+                  user?.fullName ?? '',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  user?.email ?? '',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  user?.role?.toUpperCase() ?? '',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ListTile(
+                  title: const Text('Switch Theme'),
+                  trailing: Get.isDarkMode
+                      ? const Icon(Icons.light_mode)
+                      : const Icon(Icons.dark_mode),
+                  onTap: () {
+                    Get.changeTheme(
+                        Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
+                  },
+                ),
+                ListTile(
+                  title: const Text('Language'),
+                  onTap: () {
+                    // Add logic to change language
+                  },
+                ),
+                ListTile(
+                  title: const Text('Change Password'),
+                  onTap: () {
+                    Get.to(CHANGE_PASSWORD());
+                  },
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    tileColor: Colors.grey[300],
+                    leading: const Text(
+                      'Logout',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.logout),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Logout'),
+                            content: const Text(
+                              'Are you sure you want to logout?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Memory.clear();
+                                  Get.offAllNamed(Routes.LOGIN);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text('No'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -148,6 +148,8 @@ class CHANGE_PASSWORD extends StatefulWidget {
 }
 
 class _CHANGE_PASSWORDState extends State<CHANGE_PASSWORD> {
+  final ProfileController profileController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,25 +158,39 @@ class _CHANGE_PASSWORDState extends State<CHANGE_PASSWORD> {
         centerTitle: true,
         backgroundColor: Colors.red,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             TextFormField(
-              // Add text form fields for old and new password
-              decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        width: 3, color: Colors.green), //<-- SEE HERE
-                  ),
-                  labelText: 'Old Password'),
-            ),
-            TextFormField(
+              controller: profileController.oldPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Old Password',
+              ),
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'New Password'),
             ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: profileController.newPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'New Password',
+              ),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                String token = Memory.getToken() ?? 'default_token';
+                profileController.changePassword(
+                  profileController.oldPasswordController.text,
+                  profileController.newPasswordController.text,
+                  token,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+              ),
               child: const Text('Change Password'),
             ),
           ],
