@@ -13,7 +13,7 @@ if (!isset($_POST['token'])) {
 
 $user_id = getUserId($CON, $_POST['token']);
 
-$sql = "SELECT user_id, email, full_name, role, address FROM users WHERE user_id = '$user_id'";
+$sql = "SELECT user_id, full_name, email, role FROM users WHERE user_id = '$user_id'";
 
 $result = mysqli_query($CON, $sql);
 
