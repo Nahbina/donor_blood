@@ -35,6 +35,7 @@ class Events {
 }
 
 class Event {
+  final String? id;
   final String? eventName;
   final DateTime? eventDate;
   final String? eventLocation;
@@ -42,6 +43,7 @@ class Event {
   final String? eventTime;
 
   Event({
+    this.id,
     this.eventName,
     this.eventDate,
     this.eventLocation,
@@ -50,6 +52,7 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
+        id: json["id"],
         eventName: json["event_name"],
         eventDate: json["event_date"] == null
             ? null
@@ -59,11 +62,8 @@ class Event {
         eventTime: json["event_time"],
       );
 
-  get latitude => null;
-
-  get longitude => null;
-
   Map<String, dynamic> toJson() => {
+        "id": id,
         "event_name": eventName,
         "event_date":
             "${eventDate!.year.toString().padLeft(4, '0')}-${eventDate!.month.toString().padLeft(2, '0')}-${eventDate!.day.toString().padLeft(2, '0')}",

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../models/Event.dart';
+import '../../../models/Event.dart'; // Import the updated Event model
 import '../controllers/view_event_controller.dart';
 
 class ViewEventView extends StatelessWidget {
@@ -39,6 +39,7 @@ class ViewEventView extends StatelessWidget {
           _buildEventDetailRow('Date', event.eventDate?.toString() ?? ''),
           _buildEventDetailRow('Location', event.eventLocation ?? ''),
           _buildEventDetailRow('Time', event.eventTime ?? ''),
+          _buildEventDetailRow('ID', event.id ?? ''), // Add ID to event details
         ],
       ),
     );
@@ -87,6 +88,8 @@ class ViewEventView extends StatelessWidget {
                       _buildEventDetailRow(
                           'Location', event.eventLocation ?? ''),
                       _buildEventDetailRow('Time', event.eventTime ?? ''),
+                      _buildEventDetailRow(
+                          'ID', event.id ?? ''), // Add ID to event details
                     ],
                   ),
                   trailing: ElevatedButton(

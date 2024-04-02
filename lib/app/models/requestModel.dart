@@ -42,7 +42,7 @@ class Request {
   final int? requestId;
   final int? userId;
   final int? donorId;
-  final String? status;
+  late final String? status;
   final DateTime? requestDate;
 
   Request({

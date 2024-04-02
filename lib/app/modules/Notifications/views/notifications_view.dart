@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../controllers/notifications_controller.dart'; // Adjust import path
+
+import '../controllers/notifications_controller.dart';
 
 class NotificationsView extends GetView<NotificationsController> {
   const NotificationsView({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,29 +16,20 @@ class NotificationsView extends GetView<NotificationsController> {
       ),
       body: GetBuilder<NotificationsController>(
         builder: (controller) {
-          if (controller.notificationResponse == null ||
-              controller.notificationResponse!.notifications == null) {
+          if (controller.notificationResponse == null) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          final notifications = controller.notificationResponse!.notifications!;
-          if (notifications.isEmpty) {
-            return const Center(
+          if (controller.notificationResponse?.notifications?.isEmpty ?? true) {
+            return Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Your donation has been accepted!',
-                        style: TextStyle(fontSize: 20)),
+                  SizedBox(
+                    height: 100,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Your donation has been accepted!',
-                        style: TextStyle(fontSize: 20)),
-                  ),
+                  Text('No notifications', style: TextStyle(fontSize: 20)),
                 ],
               ),
             );
@@ -45,30 +37,26 @@ class NotificationsView extends GetView<NotificationsController> {
 
           return ListView.builder(
             padding: const EdgeInsets.all(12),
-            itemCount: notifications.length,
+            itemCount: controller.notificationResponse?.notifications?.length,
             itemBuilder: (context, index) {
-              final notification = notifications[index];
-              final formattedDate = notification.createdAt != null
-                  ? DateFormat("yyyy-MM-dd hh:mm aa")
-                      .format(notification.createdAt!)
-                  : 'Unknown Date';
-
+              var formattedDate = DateFormat("yyyy-MM-dd hh:MM aa").format(
+                  controller
+                      .notificationResponse!.notifications![index].createdAt!);
               return ListTile(
                 isThreeLine: true,
                 title: Text(
-                  notification.message ?? 'Message',
-                  style: const TextStyle(
+                  controller.notificationResponse?.notifications?[index]
+                          .message ??
+                      '',
+                  style: TextStyle(
                     color: Colors.black,
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle: Text(
-                  formattedDate,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                  ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [],
                 ),
               );
             },

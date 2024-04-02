@@ -6,7 +6,7 @@ import '../../../utils/constants.dart';
 import '../../../utils/memory.dart';
 
 class EventController extends GetxController {
-  final RxList events = [].obs;
+  final RxList<Event> events = <Event>[].obs; // Specify type as Event
   final count = 0.obs;
 
   @override
@@ -15,24 +15,12 @@ class EventController extends GetxController {
     fetchEvents();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   Future<void> fetchEvents() async {
     try {
       var url = Uri.http(ipAddress, 'donor_blood_api/getEvent.php');
-
-      // Fetch token
       var token = await Memory.getToken();
+
       if (token == null) {
-        // Handle null token
         showCustomSnackBar(
           message: 'User not authenticated.',
           isSuccess: false,
@@ -40,7 +28,6 @@ class EventController extends GetxController {
         return;
       }
 
-      // Make POST request with token in body
       var response = await http.post(
         url,
         body: {'token': token},
@@ -48,35 +35,29 @@ class EventController extends GetxController {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        var eventList = Events.fromJson(data); // Use Events model to parse JSON
+        var eventList = Events.fromJson(data);
 
         if (eventList.success ?? false) {
-          // Assign fetched events to the observable list
           events.assignAll(eventList.events ?? []);
-          // Manually trigger a rebuild of the GetBuilder
           update();
-          // Show success snackbar
           showCustomSnackBar(
             message: 'Events fetched successfully',
             isSuccess: true,
           );
         } else {
-          // Show snackbar for failed request
           showCustomSnackBar(
             message: eventList.message ?? 'Failed to fetch events',
             isSuccess: false,
           );
         }
       } else {
-        // Show snackbar for failed request
         showCustomSnackBar(
           message: 'Failed to load events: ${response.statusCode}',
           isSuccess: false,
         );
       }
     } catch (e) {
-      // Handle exceptions
-      print('Error fetching events: $e'); // Print error for debugging
+      print('Error fetching events: $e');
       showCustomSnackBar(
         message: 'Failed to fetch events: $e',
         isSuccess: false,
@@ -84,13 +65,47 @@ class EventController extends GetxController {
     }
   }
 
-  void addEvent(String eventId) async {
+  void addEvent(String id) async {
     try {
-      var url = Uri.http(ipAddress, 'donor_blood_api/addEvent.php');
-
+      var url = Uri.http(ipAddress, 'donor_blood_api/admin/addEvent.php');
       var response = await http.post(url, body: {
         'token': Memory.getToken(),
-        'event_id': eventId,
+        'id': id,
+      });
+
+      if (response.statusCode == 200) {
+        var result = jsonDecode(response.body);
+
+        if (result['success']) {
+          Get.back();
+          showCustomSnackBar(
+            message: result['message'],
+            isSuccess: true,
+          );
+        } else {
+          showCustomSnackBar(
+            message: result['message'],
+          );
+        }
+      } else {
+        showCustomSnackBar(
+          message:
+              'Failed to add event. Server returned status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      showCustomSnackBar(
+        message: 'Something went wrong',
+      );
+    }
+  }
+
+  void editEvent(String id) async {
+    try {
+      var url = Uri.http(ipAddress, 'donor_blood_api/admin/editEvent.php');
+      var response = await http.post(url, body: {
+        'token': Memory.getToken(),
+        'id': id,
       });
 
       var result = jsonDecode(response.body);
@@ -113,60 +128,42 @@ class EventController extends GetxController {
     }
   }
 
-  void editEvent(String eventId) async {
+  void deleteEvent(String id) async {
     try {
-      var url = Uri.http(ipAddress, 'donor_blood_api/editEvent.php');
-
+      var url = Uri.http(ipAddress, 'donor_blood_api/admin/deleteEvent.php');
       var response = await http.post(url, body: {
         'token': Memory.getToken(),
-        'eventId': eventId,
+        'id': id,
       });
 
-      var result = jsonDecode(response.body);
+      print('Delete Event Response: ${response.body}');
 
-      if (result['success']) {
-        Get.back();
-        showCustomSnackBar(
-          message: result['message'],
-          isSuccess: true,
-        );
+      if (response.statusCode == 200) {
+        var result = jsonDecode(response.body);
+
+        if (result['success']) {
+          events.removeWhere((event) => event.id == id);
+          Get.back();
+          showCustomSnackBar(
+            message: result['message'],
+            isSuccess: true,
+          );
+        } else {
+          showCustomSnackBar(
+            message: result['message'],
+          );
+        }
       } else {
+        // If the response status code is not 200, handle it accordingly
         showCustomSnackBar(
-          message: result['message'],
+          message:
+              'Failed to delete event. Status code: ${response.statusCode}',
+          isSuccess: false,
         );
       }
     } catch (e) {
       showCustomSnackBar(
-        message: 'Something went wrong',
-      );
-    }
-  }
-
-  void deleteEvent(String eventId) async {
-    try {
-      var url = Uri.http(ipAddress, 'donor_blood_api/deleteEvent.php');
-
-      var response = await http.post(url, body: {
-        'token': Memory.getToken(),
-        'event_id': eventId,
-      });
-
-      var result = jsonDecode(response.body);
-
-      if (result['success']) {
-        Get.back();
-        showCustomSnackBar(
-          message: result['message'],
-          isSuccess: true,
-        );
-      } else {
-        showCustomSnackBar(
-          message: result['message'],
-        );
-      }
-    } catch (e) {
-      showCustomSnackBar(
-        message: 'Something went wrong',
+        message: 'Something went wrong: $e',
       );
     }
   }

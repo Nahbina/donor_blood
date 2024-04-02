@@ -14,6 +14,7 @@ class ProfileView extends GetView<ProfileController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        backgroundColor: Colors.red,
         centerTitle: true,
       ),
       body: GetBuilder<ProfileController>(
@@ -26,103 +27,103 @@ class ProfileView extends GetView<ProfileController> {
 
           final user = controller.user!.user;
 
-          return Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 50),
-                CircleAvatar(
-                  radius: 75,
-                  child: Text(
-                    user?.fullName?[0] ?? 'U',
-                    style: const TextStyle(
-                      fontSize: 50,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  user?.fullName ?? '',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  user?.email ?? '',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  user?.role?.toUpperCase() ?? '',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ListTile(
-                  title: const Text('Switch Theme'),
-                  trailing: Get.isDarkMode
-                      ? const Icon(Icons.light_mode)
-                      : const Icon(Icons.dark_mode),
-                  onTap: () {
-                    Get.changeTheme(
-                        Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
-                  },
-                ),
-                ListTile(
-                  title: const Text('Language'),
-                  onTap: () {
-                    // Add logic to change language
-                  },
-                ),
-                ListTile(
-                  title: const Text('Change Password'),
-                  onTap: () {
-                    Get.to(CHANGE_PASSWORD());
-                  },
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    tileColor: Colors.grey[300],
-                    leading: const Text(
-                      'Logout',
-                      style: TextStyle(
-                        fontSize: 20,
+          return SingleChildScrollView(
+            // Wrap your Column with SingleChildScrollView
+            child: Center(
+              child: Column(
+                children: [
+                  const SizedBox(height: 50),
+                  CircleAvatar(
+                    radius: 75,
+                    child: Text(
+                      user?.fullName?[0] ?? 'U',
+                      style: const TextStyle(
+                        fontSize: 50,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    trailing: const Icon(Icons.logout),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    user?.fullName ?? '',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    user?.email ?? '',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    user?.role?.toUpperCase() ?? '',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.edit),
+                    title: const Text('Edit Profile'),
+                    onTap: () {
+                      Get.to(() => EditProfileForm());
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.light),
+                    title: const Text('Switch Theme'),
+                    trailing: Get.isDarkMode
+                        ? const Icon(Icons.light_mode)
+                        : const Icon(Icons.dark_mode),
+                    onTap: () {
+                      Get.changeTheme(Get.isDarkMode
+                          ? ThemeData.light()
+                          : ThemeData.dark());
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.language),
+                    title: const Text('Language'),
+                    onTap: () {
+                      // Add logic to change language
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.lock),
+                    title: const Text('Change Password'),
+                    onTap: () {
+                      Get.to(() => CHANGE_PASSWORD());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('Logout'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: const Text('Logout'),
-                            content: const Text(
-                              'Are you sure you want to logout?',
-                            ),
+                            title: Text('Logout'),
+                            content: Text('Are you sure you want to logout?'),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   Memory.clear();
                                   Get.offAllNamed(Routes.LOGIN);
                                 },
-                                child: const Text('Yes'),
+                                child: Text('Yes'),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Get.back();
                                 },
-                                child: const Text('No'),
+                                child: Text('No'),
                               ),
                             ],
                           );
@@ -130,11 +131,54 @@ class ProfileView extends GetView<ProfileController> {
                       );
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class EditProfileForm extends StatelessWidget {
+  final ProfileController profileController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit Profile'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              TextFormField(
+                controller: profileController.fullNameController,
+                decoration: InputDecoration(labelText: 'Full Name'),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: profileController.emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  profileController.editProfile(
+                    profileController.fullNameController.text,
+                    profileController.emailController.text,
+                  );
+                  Get.back();
+                },
+                child: Text('Save'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -187,10 +231,11 @@ class _CHANGE_PASSWORDState extends State<CHANGE_PASSWORD> {
                   profileController.newPasswordController.text,
                   token,
                 );
+                Get.back();
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-              ),
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  backgroundColor: Colors.red),
               child: const Text('Change Password'),
             ),
           ],

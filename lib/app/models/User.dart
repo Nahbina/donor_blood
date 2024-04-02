@@ -25,6 +25,10 @@ class User {
         user: json["user"] == null ? null : UserClass.fromJson(json["user"]),
       );
 
+  set email(String email) {}
+
+  set full_name(String full_name) {}
+
   Map<String, dynamic> toJson() => {
         "success": success,
         "message": message,

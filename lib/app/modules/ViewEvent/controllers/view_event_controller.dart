@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../../../models/Event.dart';
 import '../../../utils/constants.dart'; // Import constants.dart if needed
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import '../../../utils/memory.dart';
 
 class ViewEventController extends GetxController {
@@ -39,11 +38,12 @@ class ViewEventController extends GetxController {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        var eventList = Events.fromJson(data); // Use Events model to parse JSON
+        var eventsData =
+            Events.fromJson(data); // Use Events model to parse JSON
 
-        if (eventList.success ?? false) {
+        if (eventsData.success ?? false) {
           // Assign fetched events to the observable list
-          events.assignAll(eventList.events ?? []);
+          events.assignAll(eventsData.events ?? []);
           // Manually trigger a rebuild of the GetBuilder
           update();
           // Show success snackbar
@@ -54,7 +54,7 @@ class ViewEventController extends GetxController {
         } else {
           // Show snackbar for failed request
           showCustomSnackBar(
-            message: eventList.message ?? 'Failed to fetch events',
+            message: eventsData.message ?? 'Failed to fetch events',
             isSuccess: false,
           );
         }

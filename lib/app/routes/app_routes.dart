@@ -16,6 +16,9 @@ abstract class Routes {
   static const VIEW_EVENT = _Paths.VIEW_EVENT;
   static const PAYMENT = _Paths.PAYMENT;
   static const NOTIFICATIONS = _Paths.NOTIFICATIONS;
+  static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
+  static const ADMIN_DONOR = _Paths.ADMIN_DONOR;
+  static const ADMIN_REQUEST = _Paths.ADMIN_REQUEST;
 }
 
 abstract class _Paths {
@@ -33,4 +36,7 @@ abstract class _Paths {
   static const VIEW_EVENT = '/view-event';
   static const PAYMENT = '/payment';
   static const NOTIFICATIONS = '/notifications';
+  static const ADMIN_DASHBOARD = '/admin-dashboard';
+  static const ADMIN_DONOR = '/admin-donor';
+  static const ADMIN_REQUEST = '/admin-request';
 }

@@ -1,10 +1,12 @@
+import 'package:donor_blood/app/modules/AdminDonor/views/admin_donor_view.dart';
+import 'package:donor_blood/app/modules/AdminRequest/views/admin_request_view.dart';
 import 'package:donor_blood/app/modules/Donors_detail/views/donors_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/memory.dart';
+import '../../AdminDashboard/views/admin_dashboard_view.dart';
 import '../../Event/views/event_view.dart';
-import '../controllers/admin_controller.dart';
 
 class AdminView extends StatefulWidget {
   const AdminView({Key? key}) : super(key: key);
@@ -14,12 +16,20 @@ class AdminView extends StatefulWidget {
 }
 
 class _AdminViewState extends State<AdminView> {
-  Widget _currentView = Center(
-    child: Text(
-      'AdminView is working',
-      style: TextStyle(fontSize: 20),
-    ),
-  );
+  late Widget _currentView;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentView = AdminDashboardView(); // Initialize with dashboard view
+  }
+
+  void _openDashboard() {
+    setState(() {
+      _currentView =
+          AdminDashboardView(); // Set the current view to the dashboard
+    });
+  }
 
   void _openEventPage() {
     setState(() {
@@ -29,7 +39,13 @@ class _AdminViewState extends State<AdminView> {
 
   void _openDonorPage() {
     setState(() {
-      _currentView = DonorsDetailView();
+      _currentView = AdminDonorView();
+    });
+  }
+
+  void _openRequestPage() {
+    setState(() {
+      _currentView = AdminRequestView();
     });
   }
 
@@ -52,9 +68,7 @@ class _AdminViewState extends State<AdminView> {
                 ),
                 ListTile(
                   title: Text('Dashboard'),
-                  onTap: () {
-                    // Add your logic here
-                  },
+                  onTap: _openDashboard,
                 ),
                 ListTile(
                   title: Text('Event'),
@@ -62,15 +76,11 @@ class _AdminViewState extends State<AdminView> {
                 ),
                 ListTile(
                   title: Text('Donors'),
-                  onTap: () {
-                    // Add your logic here
-                  },
+                  onTap: _openDonorPage,
                 ),
                 ListTile(
                   title: Text('Request'),
-                  onTap: () {
-                    // Add your logic here
-                  },
+                  onTap: _openRequestPage,
                 ),
                 ListTile(
                   title: Text('Donation History'),
@@ -79,7 +89,7 @@ class _AdminViewState extends State<AdminView> {
                   },
                 ),
                 ListTile(
-                  title: Text('Settings'),
+                  title: Text('Payment'),
                   onTap: () {
                     // Add your logic here
                   },

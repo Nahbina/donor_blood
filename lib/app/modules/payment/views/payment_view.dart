@@ -74,7 +74,7 @@ class PaymentView extends StatelessWidget {
                     width: 20,
                   ),
                   const Text(
-                    'Pay with Khalti',
+                    'Donate with Khalti',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,
