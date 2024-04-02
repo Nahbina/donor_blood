@@ -35,7 +35,7 @@ if (!getUserId($CON, $token) || !isAdmin($CON, $token)) {
 }
 
 // Check if event ID and new event details are provided in the request
-if (!isset($_POST['event_id'], $_POST['event_name'], $_POST['event_date'], $_POST['event_location'], $_POST['event_description'], $_POST['event_time'])) {
+if (!isset($_POST['id'], $_POST['event_name'], $_POST['event_date'], $_POST['event_location'], $_POST['event_description'], $_POST['event_time'])) {
     echo json_encode([
         "success" => false,
         "message" => "Event ID or new event details are not set"
@@ -44,7 +44,7 @@ if (!isset($_POST['event_id'], $_POST['event_name'], $_POST['event_date'], $_POS
 }
 
 // Extract event ID and new event details from the request
-$event_id = $_POST["event_id"];
+$id = $_POST["id"];
 $event_name = $_POST["event_name"];
 $event_date = $_POST["event_date"];
 $event_location = $_POST["event_location"];

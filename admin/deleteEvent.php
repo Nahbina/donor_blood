@@ -6,7 +6,6 @@ header("Access-Control-Allow-Methods: POST");
 
 // Allow the following headers from any origin
 header("Access-Control-Allow-Headers: Content-Type");
-
 // Include database connection
 include "../database/database_connection.php";
 
@@ -35,7 +34,7 @@ if (!getUserId($CON, $token) || !isAdmin($CON, $token)) {
 }
 
 // Check if event ID is provided in the request
-if (!isset($_POST['event_id'])) {
+if (!isset($_POST['id'])) {
     echo json_encode([
         "success" => false,
         "message" => "Event ID not provided!"
@@ -44,12 +43,12 @@ if (!isset($_POST['event_id'])) {
 }
 
 // Extract event ID from the request
-$event_id = $_POST["event_id"];
+$id = $_POST["id"];
 
 // Delete event data from the database
 $sql = "DELETE FROM events WHERE id = ?";
 $stmt = mysqli_prepare($CON, $sql);
-mysqli_stmt_bind_param($stmt, "i", $event_id);
+mysqli_stmt_bind_param($stmt, "i", $id);
 
 $result = mysqli_stmt_execute($stmt);
 

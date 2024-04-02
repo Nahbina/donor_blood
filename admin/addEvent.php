@@ -34,7 +34,8 @@ if (!getUserId($CON, $token) || !isAdmin($CON, $token)) {
 }
 
 // Extract event details from the request
-if (isset($_POST['event_name'], $_POST['event_date'], $_POST['event_location'], $_POST['event_description'], $_POST['event_time'])) {
+if (isset($_POST['id'],$_POST['event_name'], $_POST['event_date'], $_POST['event_location'], $_POST['event_description'], $_POST['event_time'])) {
+    $event_name = $_POST["id"];
     $event_name = $_POST["event_name"];
     $event_date = $_POST["event_date"];
     $event_location = $_POST["event_location"];
@@ -49,9 +50,9 @@ if (isset($_POST['event_name'], $_POST['event_date'], $_POST['event_location'], 
 }
 
 // Insert event data into the database
-$sql = "INSERT INTO events (event_name, event_date, event_location, event_description,event_time) VALUES (?,?, ?, ?, ?)";
+$sql = "INSERT INTO events (id,event_name, event_date, event_location, event_description,event_time) VALUES (?,?,?, ?, ?, ?)";
 $stmt = mysqli_prepare($CON, $sql);
-mysqli_stmt_bind_param($stmt, "sssss", $event_name, $event_date, $event_location, $event_description,$event_time);
+mysqli_stmt_bind_param($stmt, "ssssss",$id, $event_name, $event_date, $event_location, $event_description,$event_time);
 
 $result = mysqli_stmt_execute($stmt);
 

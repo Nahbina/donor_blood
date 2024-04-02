@@ -49,6 +49,7 @@ if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         // Build an array of events
         $events[] = [
+            "id" => $row['id'],
             "event_name" => $row['event_name'],
             "event_date" => $row['event_date'],
             "event_location" => $row['event_location'],

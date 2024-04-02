@@ -1,4 +1,11 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+
+// Allow the following methods from any origin
+header("Access-Control-Allow-Methods: POST");
+
+// Allow the following headers from any origin
+header("Access-Control-Allow-Headers: Content-Type");
 // Include database connection
 include "./database/database_connection.php";
 
@@ -26,29 +33,99 @@ if ($userId == null) {
     die();
 }
 
+// Check if the user is a donor
+if (!isDonor($CON, $token)) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Only donors can view request blood!"
+    ]);
+    die();
+}
+
+// Retrieve the donor ID directly from the database
+$sql = "SELECT donor_id FROM donors WHERE user_id = ?";
+$stmt = mysqli_prepare($CON, $sql);
+
+if (!$stmt) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to prepare statement: " . mysqli_error($CON)
+    ]);
+    die();
+}
+
+// Bind parameters and execute the statement
+mysqli_stmt_bind_param($stmt, "i", $userId);
+if (!mysqli_stmt_execute($stmt)) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to execute statement: " . mysqli_error($CON)
+    ]);
+    die();
+}
+
+$result = mysqli_stmt_get_result($stmt);
+$row = mysqli_fetch_assoc($result);
+
+if (!$row) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Donor ID not found for the user!"
+    ]);
+    die();
+}
+
+$donorId = $row['donor_id'];
+
 // Prepare the SQL statement to get blood requests for the donor
 $sql = "SELECT * FROM blood_requests WHERE donor_id = ?";
 $stmt = mysqli_prepare($CON, $sql);
 
+if (!$stmt) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to prepare statement: " . mysqli_error($CON)
+    ]);
+    die();
+}
+
 // Bind parameters and execute the statement
-mysqli_stmt_bind_param($stmt, "i", $userId);
-mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_param($stmt, "i", $donorId);
+if (!mysqli_stmt_execute($stmt)) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to execute statement: " . mysqli_error($CON)
+    ]);
+    die();
+}
+
 $result = mysqli_stmt_get_result($stmt);
 
-if ($result) {
-    $requests = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $requests[] = $row;
-    }
+if (!$result) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to get result set: " . mysqli_error($CON)
+    ]);
+    die();
+}
+
+$requests = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $requests[] = $row;
+}
+
+if (empty($requests)) {
+    echo json_encode([
+        "success" => true,
+        "message" => "No blood requests found for the donor.",
+        "requests" => [],
+        "donor_id" => $donorId
+    ]);
+} else {
     echo json_encode([
         "success" => true,
         "message" => "Blood requests fetched successfully!",
         "requests" => $requests
-    ]);
-} else {
-    echo json_encode([
-        "success" => false,
-        "message" => "Failed to fetch blood requests!"
     ]);
 }
 
