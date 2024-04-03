@@ -1,4 +1,13 @@
 <?php
+
+header("Access-Control-Allow-Origin: *");
+
+// Allow the following methods from any origin
+header("Access-Control-Allow-Methods: POST");
+
+// Allow the following headers from any origin
+header("Access-Control-Allow-Headers: Content-Type");
+
 if (!isset($_POST['token'])) {
     echo json_encode([
         "success" => false,
@@ -16,9 +25,9 @@ $token = $_POST['token'];
 $user_id = getUserId($CON,$token);
 
 
-if (isset($_POST['user_id'], $_POST['amount'], $_POST['details'])) {
+if (isset( $_POST['amount'], $_POST['details'])) {
     global $CON;
-    $user_id = $_POST['user_id'];
+    // $user_id = $_POST['user_id'];
     $amount = $_POST['amount'];
     $details = $_POST['details'];
 

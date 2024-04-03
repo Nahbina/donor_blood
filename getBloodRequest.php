@@ -1,11 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-
-// Allow the following methods from any origin
-header("Access-Control-Allow-Methods: POST");
-
-// Allow the following headers from any origin
-header("Access-Control-Allow-Headers: Content-Type");
 // Include database connection
 include "./database/database_connection.php";
 
@@ -33,14 +26,14 @@ if ($userId == null) {
     die();
 }
 
-// Check if the user is a donor
-if (!isDonor($CON, $token)) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Only donors can view request blood!"
-    ]);
-    die();
-}
+// // Check if the user is a donor
+// if (!isDonor($CON, $token)) {
+//     echo json_encode([
+//         "success" => false,
+//         "message" => "Only donors can view request blood!"
+//     ]);
+//     die();
+// }
 
 // Retrieve the donor ID directly from the database
 $sql = "SELECT donor_id FROM donors WHERE user_id = ?";

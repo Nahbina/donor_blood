@@ -24,19 +24,23 @@ if (!$user_id) {
     ]);
     die();
 }
-// Check if request ID is provided
-if (!isset($_POST['request_id'])) {
+
+// Find the request_id associated with the user
+$sql = "SELECT request_id FROM blood_requests WHERE user_id='$user_id'";
+$result = mysqli_query($CON, $sql);
+
+if (!$result || mysqli_num_rows($result) == 0) {
     echo json_encode([
         "success" => false,
-        "message" => "Request ID not found!"
+        "message" => "No requests found for this user!"
     ]);
     die();
 }
+$row = mysqli_fetch_assoc($result);
+$requestId = $row['request_id'];
 
-$requestId = $_POST['request_id'];
-
+// Fetch notifications for the found request_id
 $sql = "SELECT * FROM notifications WHERE request_id='$requestId' ORDER BY notification_id DESC";
-
 $result = mysqli_query($CON, $sql);
 
 if (!$result) {

@@ -1,12 +1,5 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
-
-// Allow the following methods from any origin
-header("Access-Control-Allow-Methods: POST");
-
-// Allow the following headers from any origin
-header("Access-Control-Allow-Headers: Content-Type");
 // Include database connection
 include "./database/database_connection.php";
 
@@ -26,7 +19,7 @@ $token = $_POST['token'];
 
 // Get user ID associated with the token
 $userId = getUserId($CON, $token);
-if ($userId == null) {
+if ($userId === null) {
     echo json_encode([
         "success" => false,
         "message" => "Unauthorized access!"
@@ -34,18 +27,28 @@ if ($userId == null) {
     die();
 }
 
-// Check if donor ID is provided
-if (!isset($_POST['donor_id'])) {
+// Check if the user associated with the token is a donor
+$isDonor = isDonor($CON, $token);
+if (!$isDonor) {
     echo json_encode([
         "success" => false,
-        "message" => "Donor ID not provided!"
+        "message" => "User is not a donor."
     ]);
     die();
 }
 
-$donorId = $_POST['donor_id'];
+// Fetch donor ID based on user ID
+$donorId = getDonorId($CON, $userId);
 
-// Prepare SQL statement to fetch donation history based on donor ID
+if ($donorId === null) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Donor ID not found."
+    ]);
+    die();
+}
+
+// Fetch donation history based on donor ID
 $sql = "SELECT * FROM donation_history WHERE donor_id = ?"; 
 $stmt = mysqli_prepare($CON, $sql);
 
@@ -73,4 +76,17 @@ if (mysqli_num_rows($result) > 0) {
 
 // Close the statement
 mysqli_stmt_close($stmt);
+
+// Function to retrieve the donor ID associated with the user ID
+function getDonorId($con, $userId) {
+    $sql = "SELECT donor_id FROM donors WHERE user_id = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $donorId);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+    return $donorId;
+}
+
 ?>
