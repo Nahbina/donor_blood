@@ -4,8 +4,12 @@ import '../modules/AdminDashboard/bindings/admin_dashboard_binding.dart';
 import '../modules/AdminDashboard/views/admin_dashboard_view.dart';
 import '../modules/AdminDonor/bindings/admin_donor_binding.dart';
 import '../modules/AdminDonor/views/admin_donor_view.dart';
+import '../modules/AdminPayment/bindings/admin_payment_binding.dart';
+import '../modules/AdminPayment/views/admin_payment_view.dart';
 import '../modules/AdminRequest/bindings/admin_request_binding.dart';
 import '../modules/AdminRequest/views/admin_request_view.dart';
+import '../modules/DonationHistory/bindings/donation_history_binding.dart';
+import '../modules/DonationHistory/views/donation_history_view.dart';
 import '../modules/Donors/bindings/donors_binding.dart';
 import '../modules/Donors/views/donors_view.dart';
 import '../modules/Donors_detail/bindings/donors_detail_binding.dart';
@@ -120,6 +124,16 @@ class AppPages {
       name: _Paths.ADMIN_REQUEST,
       page: () => const AdminRequestView(),
       binding: AdminRequestBinding(),
+    ),
+    GetPage(
+      name: _Paths.DONATION_HISTORY,
+      page: () => const DonationHistoryView(),
+      binding: DonationHistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_PAYMENT,
+      page: () => const AdminPaymentView(),
+      binding: AdminPaymentBinding(),
     ),
   ];
 }

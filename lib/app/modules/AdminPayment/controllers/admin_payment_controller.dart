@@ -6,9 +6,10 @@ import '../../../routes/app_pages.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/memory.dart';
 
-class PaymentController extends GetxController {
-  final count = 0.obs;
+class AdminPaymentController extends GetxController {
+  //TODO: Implement AdminPaymentController
 
+  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -23,6 +24,8 @@ class PaymentController extends GetxController {
   void onClose() {
     super.onClose();
   }
+
+  void increment() => count.value++;
 
   void makePayment(String userId, int amount, String details) {
     try {

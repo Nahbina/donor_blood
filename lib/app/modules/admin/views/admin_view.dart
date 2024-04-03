@@ -1,11 +1,12 @@
 import 'package:donor_blood/app/modules/AdminDonor/views/admin_donor_view.dart';
 import 'package:donor_blood/app/modules/AdminRequest/views/admin_request_view.dart';
-import 'package:donor_blood/app/modules/Donors_detail/views/donors_detail_view.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/memory.dart';
 import '../../AdminDashboard/views/admin_dashboard_view.dart';
+import '../../AdminPayment/views/admin_payment_view.dart';
 import '../../Event/views/event_view.dart';
 
 class AdminView extends StatefulWidget {
@@ -46,6 +47,12 @@ class _AdminViewState extends State<AdminView> {
   void _openRequestPage() {
     setState(() {
       _currentView = AdminRequestView();
+    });
+  }
+
+  void _openAdminPaymentPage() {
+    setState(() {
+      _currentView = AdminPaymentView();
     });
   }
 
@@ -90,9 +97,7 @@ class _AdminViewState extends State<AdminView> {
                 ),
                 ListTile(
                   title: Text('Payment'),
-                  onTap: () {
-                    // Add your logic here
-                  },
+                  onTap: _openAdminPaymentPage,
                 ),
                 GestureDetector(
                   onTap: () {

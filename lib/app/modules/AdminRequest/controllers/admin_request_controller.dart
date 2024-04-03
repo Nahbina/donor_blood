@@ -16,8 +16,7 @@ class AdminRequestController extends GetxController {
 
   Future<void> fetchRequests() async {
     try {
-      var url = Uri.http(ipAddress,
-          'donor_blood_api/getBloodRequest.php'); // Update the API endpoint
+      var url = Uri.http(ipAddress, 'donor_blood_api/getBloodRequest.php');
       var token = await Memory.getToken();
 
       if (token == null) {
@@ -35,19 +34,21 @@ class AdminRequestController extends GetxController {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        var requestList = BloodRequest.fromJson(
-            data); // Parse JSON response using the BloodRequest model
+        if (data['success']) {
+          List<dynamic> requestsData = data['requests'];
+          List<Request> requestsList = requestsData
+              .map((requestData) => Request.fromJson(requestData))
+              .toList();
 
-        if (requestList.success ?? false) {
-          requests.assignAll(requestList.requests ?? []);
-          update();
+          requests.assignAll(requestsList);
+          update(); // Update the state to trigger a rebuild
           showCustomSnackBar(
             message: 'Requests fetched successfully',
             isSuccess: true,
           );
         } else {
           showCustomSnackBar(
-            message: requestList.message ?? 'Failed to fetch requests',
+            message: data['message'] ?? 'Failed to fetch requests',
             isSuccess: false,
           );
         }
@@ -64,15 +65,5 @@ class AdminRequestController extends GetxController {
         isSuccess: false,
       );
     }
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

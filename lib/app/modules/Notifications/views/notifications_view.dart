@@ -39,9 +39,10 @@ class NotificationsView extends GetView<NotificationsController> {
             padding: const EdgeInsets.all(12),
             itemCount: controller.notificationResponse?.notifications?.length,
             itemBuilder: (context, index) {
-              var formattedDate = DateFormat("yyyy-MM-dd hh:MM aa").format(
+              var formattedDate = DateFormat("yyyy-MM-dd hh:mm aa").format(
                   controller
                       .notificationResponse!.notifications![index].createdAt!);
+
               return ListTile(
                 isThreeLine: true,
                 title: Text(

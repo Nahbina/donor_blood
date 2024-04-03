@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import '../../../models/donorModel.dart';
@@ -15,7 +14,7 @@ class DonorsDetailController extends GetxController {
     getDonorDetails();
   }
 
-  void addBloodRequest(String donorId) async {
+  Future<void> addBloodRequest(String donorId) async {
     try {
       var token = await Memory.getToken();
       if (token == null) {
@@ -34,7 +33,7 @@ class DonorsDetailController extends GetxController {
       );
 
       var result = jsonDecode(response.body);
-      if (result['success']) {
+      if (response.statusCode == 200 && result['success']) {
         // Handle success
         Get.snackbar('Success', 'Blood donation request sent successfully!');
       } else {
@@ -51,17 +50,24 @@ class DonorsDetailController extends GetxController {
 
   Future<void> getDonorDetails() async {
     try {
+      var token = await Memory.getToken();
+      if (token == null) {
+        Get.snackbar('Error', 'Token not found');
+        return; // Exit function if token is null
+      }
+
       var url = Uri.http(ipAddress, 'donor_blood_api/getDonor.php');
-      var response = await http.get(url);
+      var response = await http.post(
+        url,
+        body: {'token': token},
+      );
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         var donor = Donor.fromJson(data);
 
         donorDetails.value = donor.donors ?? []; // Ensure donors is not null
-        Get.snackbar(
-            'Success', donor.message ?? 'Donor details fetched successfully',
-            backgroundColor: Colors.green);
+        // Don't show any message here, as it's just fetching donor details
       } else {
         Get.snackbar('Error', 'Failed to load donor details');
       }

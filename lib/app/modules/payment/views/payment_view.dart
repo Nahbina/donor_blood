@@ -4,8 +4,10 @@ import '../controllers/payment_controller.dart';
 
 class PaymentView extends StatelessWidget {
   final String userId; // Define userId variable
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController detailsController = TextEditingController();
 
-  const PaymentView({Key? key, required this.userId}) : super(key: key);
+  PaymentView({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class PaymentView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
+              controller: amountController, // Add controller
               decoration: InputDecoration(
                 labelText: 'Amount',
                 border: OutlineInputBorder(),
@@ -38,6 +41,7 @@ class PaymentView extends StatelessWidget {
             ),
             SizedBox(height: 16),
             TextFormField(
+              controller: detailsController, // Add controller
               decoration: InputDecoration(
                 labelText: 'Details',
                 border: OutlineInputBorder(),
@@ -60,8 +64,13 @@ class PaymentView extends StatelessWidget {
                 ),
               ),
               onPressed: () {
+                // Retrieve amount and details from the text fields
+                String amount = amountController.text;
+                String details = detailsController.text;
+
                 // Call makePayment from the initialized PaymentController
-                Get.find<PaymentController>().makePayment(userId);
+                Get.find<PaymentController>().makePayment(userId,
+                    int.parse(amount), details); // Pass amount and details
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/admin_request_controller.dart';
 
-class AdminRequestView extends GetView<AdminRequestController> {
+class AdminRequestView extends StatelessWidget {
   const AdminRequestView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the controller
-    final AdminRequestController controller = Get.put(AdminRequestController());
-
     return Scaffold(
       body: SingleChildScrollView(
-        child: Obx(
-          () {
+        child: GetBuilder<AdminRequestController>(
+          init: AdminRequestController(), // Initialize the controller here
+          builder: (controller) {
             if (controller.requests.isEmpty) {
               return const CircularProgressIndicator();
             } else {
