@@ -41,7 +41,7 @@ class DonorCard extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -49,13 +49,13 @@ class DonorCard extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(donor.bloodType ?? '', style: TextStyle(fontSize: 16)),
-                  Text(
-                      donor.birthDate != null
-                          ? donor.birthDate!.toString()
-                          : '',
-                      style: TextStyle(fontSize: 16)),
-                  Text(donor.lastDonationDate ?? '',
-                      style: TextStyle(fontSize: 16)),
+                  // Text(
+                  //     donor.birthDate != null
+                  //         ? donor.birthDate!.toString()
+                  //         : '',
+                  //     style: TextStyle(fontSize: 16)),
+                  // Text(donor.lastDonationDate ?? '',
+                  //     style: TextStyle(fontSize: 16)),
                   Text(donor.phoneNumber ?? '', style: TextStyle(fontSize: 16)),
 
                   // View donor button

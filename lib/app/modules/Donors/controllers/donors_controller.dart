@@ -14,7 +14,8 @@ class DonorsController extends GetxController {
   var donorbirthDate = TextEditingController();
   var donorlastDonationDate = TextEditingController();
   var donorPhoneNumber = TextEditingController();
-
+  var donorAddress = TextEditingController();
+  String? selectedBloodType;
   XFile? image;
   Uint8List? imageBytes;
   String? specializationId;
@@ -52,16 +53,12 @@ class DonorsController extends GetxController {
         var request = http.MultipartRequest('POST', url);
 
         request.fields['token'] = Memory.getToken() ?? '';
-        request.fields['blood_type'] = donorBloodType.text;
+        request.fields['blood_type'] =
+            selectedBloodType!; // Use selectedBloodType
         request.fields['birth_date'] = donorbirthDate.text;
         request.fields['last_donation_date'] = donorlastDonationDate.text;
         request.fields['phoneNumber'] = donorPhoneNumber.text;
-        request.files.add(http.MultipartFile.fromBytes(
-          'avatar',
-          imageBytes!,
-          filename: image!.name,
-        ));
-
+        request.fields['Address'] = donorAddress.text;
         request.files.add(http.MultipartFile.fromBytes(
           'avatar',
           imageBytes!,
@@ -73,21 +70,24 @@ class DonorsController extends GetxController {
         var result = jsonDecode(data);
 
         if (result['success']) {
-          // donorNameController.clear();
+          // Clear form fields and update UI
           donorBloodType.clear();
           donorbirthDate.clear();
           donorlastDonationDate.clear();
           donorPhoneNumber.clear();
-
+          donorAddress.clear();
           imageBytes = null;
           image = null;
           update();
+
+          // Show success message
           Get.back();
           showCustomSnackBar(
             message: result['message'],
             isSuccess: true,
           );
 
+          // Update donors list
           Get.find<HomeController>().getDonors();
         } else {
           showCustomSnackBar(

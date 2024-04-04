@@ -46,6 +46,7 @@ class DonorElement {
   final String? avatar;
   final String? phoneNumber;
   final String? fullName;
+  final String? Address;
 
   DonorElement({
     this.donorId,
@@ -56,6 +57,7 @@ class DonorElement {
     this.avatar,
     this.phoneNumber,
     this.fullName,
+    this.Address,
   });
 
   factory DonorElement.fromJson(Map<String, dynamic> json) => DonorElement(
@@ -69,6 +71,7 @@ class DonorElement {
         avatar: json["avatar"],
         phoneNumber: json["phoneNumber"],
         fullName: json["full_name"],
+        Address: json["Address"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -81,5 +84,6 @@ class DonorElement {
         "avatar": avatar,
         "phoneNumber": phoneNumber,
         "full_name": fullName,
+        "Address": Address,
       };
 }

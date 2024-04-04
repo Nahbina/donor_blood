@@ -26,20 +26,32 @@ class DonorFormView extends StatelessWidget {
             key: controller.donorformKey,
             child: Column(
               children: [
-                TextFormField(
-                  controller: controller.donorBloodType,
-                  keyboardType: TextInputType.text,
+                DropdownButtonFormField<String>(
+                  value: controller.selectedBloodType,
+                  onChanged: (newValue) {
+                    if (newValue != null) {
+                      controller.selectedBloodType = newValue;
+                    }
+                  },
+                  items: <String>[
+                    'A+',
+                    'A-',
+                    'B+',
+                    'B-',
+                    'O+',
+                    'O-',
+                    'AB+',
+                    'AB-',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                   decoration: const InputDecoration(
                     labelText: 'Blood Type',
-                    hintText: 'Enter donor Blood Type',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter donor Blood Type';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -57,6 +69,18 @@ class DonorFormView extends StatelessWidget {
                       return 'Please enter donor birthdate';
                     }
                     return null;
+                  },
+                  onTap: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+                    if (selectedDate != null) {
+                      controller.donorbirthDate.text =
+                          selectedDate.toString(); // Format as needed
+                    }
                   },
                 ),
                 const SizedBox(
@@ -76,6 +100,18 @@ class DonorFormView extends StatelessWidget {
                     }
                     return null;
                   },
+                  onTap: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+                    if (selectedDate != null) {
+                      controller.donorlastDonationDate.text =
+                          selectedDate.toString(); // Format as needed
+                    }
+                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -91,6 +127,24 @@ class DonorFormView extends StatelessWidget {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter donor phone number';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: controller.donorAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Address',
+                    hintText: 'Enter donor Address',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter Address';
                     }
                     return null;
                   },
