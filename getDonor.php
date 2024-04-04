@@ -38,7 +38,11 @@ if (!$user_id) {
 }
 
 // Prepare the SQL statement with JOIN to get full names from the User table
-$sql = "SELECT donors.*, users.full_name FROM donors JOIN users ON donors.user_id = users.user_id";
+$sql = "SELECT donors.*, users.full_name 
+        FROM donors 
+        JOIN users ON donors.user_id = users.user_id
+        ORDER BY donors.donor_id DESC";
+
 $stmt = mysqli_prepare($CON, $sql);
 
 // Execute the statement

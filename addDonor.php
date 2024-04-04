@@ -48,12 +48,13 @@ if (isDonor($CON, $token)) {
 }
 
 // Check if required form fields are set
-if (isset($_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date'], $_FILES['avatar'], $_POST['phoneNumber'])) {
+if (isset($_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date'], $_FILES['avatar'], $_POST['phoneNumber'],$_POST['Address'])) {
     $blood_type = $_POST['blood_type'];
     $birth_date = $_POST['birth_date'];
     $last_donation_date = $_POST['last_donation_date'];
     $avatar = $_FILES['avatar'];
     $phoneNumber = $_POST['phoneNumber'];
+    $Address = $_POST['Address'];
     $avatar_name = $avatar['name'];
     $avatar_tmp_name = $avatar['tmp_name'];
     $avatar_size = $avatar['size'];
@@ -77,7 +78,8 @@ if (isset($_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date
 
     // Move uploaded file to the images directory
     $avatar_name = uniqid() . "." . $ext;
-    if (!move_uploaded_file($avatar_tmp_name, "./images/" . $avatar_name)) {
+    $target_path = "./images/" . $avatar_name;
+    if (!move_uploaded_file($avatar_tmp_name, $target_path)) {
         echo json_encode([
             "success" => false,
             "message" => "Image upload failed!"
@@ -86,10 +88,17 @@ if (isset($_POST['blood_type'], $_POST['birth_date'], $_POST['last_donation_date
     }
 
     // Insert user as donor into the database using prepared statement
-    $avatar_path = "images/" . $avatar_name; // Concatenate the folder name with the file name
-    $sql = "INSERT INTO donors (user_id, blood_type, birth_date, last_donation_date, avatar, phoneNumber) VALUES ( ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO donors (user_id, blood_type, birth_date, last_donation_date, avatar, phoneNumber,Address) VALUES (?, ?, ?, ?, ?, ?,?)";
     $stmt = mysqli_prepare($CON, $sql);
-    mysqli_stmt_bind_param($stmt, "sissss", $userId, $blood_type, $birth_date, $last_donation_date, $avatar_path, $phoneNumber);
+    if (!$stmt) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Database error: " . mysqli_error($CON)
+        ]);
+        die();
+    }
+    
+    mysqli_stmt_bind_param($stmt, "issssss", $userId, $blood_type, $birth_date, $last_donation_date, $target_path, $phoneNumber,$Address);
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
