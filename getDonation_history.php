@@ -27,55 +27,82 @@ if ($userId === null) {
     die();
 }
 
-// Check if the user associated with the token is a donor
-$isDonor = isDonor($CON, $token);
-if (!$isDonor) {
-    echo json_encode([
-        "success" => false,
-        "message" => "User is not a donor."
-    ]);
-    die();
+// Check if the user associated with the token is an admin
+$isAdmin = isAdmin($CON, $token);
+if (!$isAdmin) {
+    // Check if the user associated with the token is a donor
+    $isDonor = isDonor($CON, $token);
+    if (!$isDonor) {
+        echo json_encode([
+            "success" => false,
+            "message" => "User is not a donor or admin."
+        ]);
+        die();
+    }
 }
 
-// Fetch donor ID based on user ID
-$donorId = getDonorId($CON, $userId);
+// If the user is an admin, there's no need to fetch a donor ID
+if (!$isAdmin) {
+    // Fetch donor ID based on user ID
+    $donorId = getDonorId($CON, $userId);
 
-if ($donorId === null) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Donor ID not found."
-    ]);
-    die();
+    if ($donorId === null) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Donor ID not found."
+        ]);
+        die();
+    }
 }
 
-// Fetch donation history based on donor ID
-$sql = "SELECT * FROM donation_history WHERE donor_id = ?"; 
-$stmt = mysqli_prepare($CON, $sql);
+// Fetch donation history based on donor ID (if applicable)
+if (!$isAdmin) {
+    $sql = "SELECT * FROM donation_history WHERE donor_id = ?"; 
+    $stmt = mysqli_prepare($CON, $sql);
 
-// Bind parameter and execute the statement
-mysqli_stmt_bind_param($stmt, "i", $donorId);
-mysqli_stmt_execute($stmt);
+    // Bind parameter and execute the statement
+    mysqli_stmt_bind_param($stmt, "i", $donorId);
+    mysqli_stmt_execute($stmt);
 
-// Get result
-$result = mysqli_stmt_get_result($stmt);
+    // Get result
+    $result = mysqli_stmt_get_result($stmt);
 
-// Check if there are any records
-if (mysqli_num_rows($result) > 0) {
-    // Fetch and return donation history
-    $donationHistory = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    echo json_encode([
-        "success" => true,
-        "donation_history" => $donationHistory
-    ]);
+    // Check if there are any records
+    if (mysqli_num_rows($result) > 0) {
+        // Fetch and return donation history
+        $donationHistory = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        echo json_encode([
+            "success" => true,
+            "donation_history" => $donationHistory
+        ]);
+    } else {
+        echo json_encode([
+            "success" => false,
+            "message" => "No donation history found for this donor."
+        ]);
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
 } else {
-    echo json_encode([
-        "success" => false,
-        "message" => "No donation history found for this donor."
-    ]);
-}
+    // Fetch donation history for all donors (admin view)
+    $sql = "SELECT * FROM donation_history"; 
+    $result = mysqli_query($CON, $sql);
 
-// Close the statement
-mysqli_stmt_close($stmt);
+    if ($result) {
+        // Fetch and return donation history
+        $donationHistory = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        echo json_encode([
+            "success" => true,
+            "donation_history" => $donationHistory
+        ]);
+    } else {
+        echo json_encode([
+            "success" => false,
+            "message" => "Failed to fetch donation history."
+        ]);
+    }
+}
 
 // Function to retrieve the donor ID associated with the user ID
 function getDonorId($con, $userId) {

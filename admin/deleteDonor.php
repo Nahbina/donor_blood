@@ -1,10 +1,16 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 
+// Allow the following methods from any origin
+header("Access-Control-Allow-Methods: POST");
+
+// Allow the following headers from any origin
+header("Access-Control-Allow-Headers: Content-Type");
 // Include database connection
-include "./database/database_connection.php";
+include "../database/database_connection.php";
 
 // Include authentication helper functions
-include "./helpers/auth.php";
+include "../helpers/auth.php";
 
 // Check if token is provided in the request
 if (!isset($_POST['token'])) {

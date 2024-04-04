@@ -44,7 +44,7 @@ if (!isset($_POST['id'], $_POST['event_name'], $_POST['event_date'], $_POST['eve
 }
 
 // Extract event ID and new event details from the request
-$id = $_POST["id"];
+$event_id= $_POST["id"];
 $event_name = $_POST["event_name"];
 $event_date = $_POST["event_date"];
 $event_location = $_POST["event_location"];
