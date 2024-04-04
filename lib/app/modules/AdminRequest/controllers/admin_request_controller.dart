@@ -6,31 +6,30 @@ import '../../../utils/constants.dart';
 import '../../../utils/memory.dart';
 
 class AdminRequestController extends GetxController {
-  final RxList<Request> requests = <Request>[].obs; // Specify type as Request
+  final RxList<Request> requests = <Request>[].obs;
+  final RxBool isLoading = true.obs;
+  final RxString error = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchRequests(); // Call the fetchRequests method on initialization
+    fetchRequests();
   }
 
   Future<void> fetchRequests() async {
     try {
+      isLoading.value = true;
+      error.value = '';
+
       var url = Uri.http(ipAddress, 'donor_blood_api/getBloodRequest.php');
       var token = await Memory.getToken();
 
       if (token == null) {
-        showCustomSnackBar(
-          message: 'User not authenticated.',
-          isSuccess: false,
-        );
+        error.value = 'User not authenticated.';
         return;
       }
 
-      var response = await http.post(
-        url,
-        body: {'token': token},
-      );
+      var response = await http.post(url, body: {'token': token});
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -41,29 +40,16 @@ class AdminRequestController extends GetxController {
               .toList();
 
           requests.assignAll(requestsList);
-          update(); // Update the state to trigger a rebuild
-          showCustomSnackBar(
-            message: 'Requests fetched successfully',
-            isSuccess: true,
-          );
+          isLoading.value = false;
         } else {
-          showCustomSnackBar(
-            message: data['message'] ?? 'Failed to fetch requests',
-            isSuccess: false,
-          );
+          error.value = data['message'] ?? 'Failed to fetch requests';
         }
       } else {
-        showCustomSnackBar(
-          message: 'Failed to load requests: ${response.statusCode}',
-          isSuccess: false,
-        );
+        error.value = 'Failed to load requests: ${response.statusCode}';
       }
     } catch (e) {
+      error.value = 'Failed to fetch requests: $e';
       print('Error fetching requests: $e');
-      showCustomSnackBar(
-        message: 'Failed to fetch requests: $e',
-        isSuccess: false,
-      );
     }
   }
 }

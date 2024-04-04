@@ -89,10 +89,14 @@ class _AdminViewState extends State<AdminView> {
                   title: Text('Request'),
                   onTap: _openRequestPage,
                 ),
+                // ListTile(
+                //   title: Text('Donation History'),
+                //   // onTap: _openRequestPage,
+                // ),
                 ListTile(
-                  title: Text('Donation History'),
+                  title: Text('Profile'),
                   onTap: () {
-                    // Add your logic here
+                    Get.toNamed('/profile');
                   },
                 ),
                 ListTile(

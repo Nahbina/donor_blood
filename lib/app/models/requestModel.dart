@@ -54,9 +54,15 @@ class Request {
   });
 
   factory Request.fromJson(Map<String, dynamic> json) => Request(
-        requestId: json["request_id"],
-        userId: json["user_id"],
-        donorId: json["donor_id"],
+        requestId: json["request_id"] is int
+            ? json["request_id"]
+            : int.tryParse(json["request_id"]),
+        userId: json["user_id"] is int
+            ? json["user_id"]
+            : int.tryParse(json["user_id"]),
+        donorId: json["donor_id"] is int
+            ? json["donor_id"]
+            : int.tryParse(json["donor_id"]),
         status: json["status"],
         requestDate: json["request_date"] == null
             ? null

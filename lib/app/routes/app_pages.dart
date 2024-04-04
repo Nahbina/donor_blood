@@ -102,7 +102,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PAYMENT,
-      page: () => PaymentView(userId: ""),
+      page: () => PaymentView(),
       binding: PaymentBinding(),
     ),
     GetPage(

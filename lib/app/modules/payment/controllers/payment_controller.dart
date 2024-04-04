@@ -23,43 +23,4 @@ class PaymentController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
-  void makePayment(String userId, int amount, String details) {
-    try {
-      PaymentConfig config = PaymentConfig(
-        productName: "Donation",
-        amount: 100 * 100, // Convert amount to paisa
-        productIdentity: userId,
-      );
-      KhaltiScope.of(Get.context!).pay(
-        config: config,
-        preferences: [PaymentPreference.khalti],
-        onSuccess: (v) async {
-          Uri url = Uri.http(ipAddress, 'donor_blood_api/makePayment.php');
-          var response = await http.post(url, body: {
-            'token': Memory.getToken() ?? '',
-            'user_id': userId,
-            'amount': amount.toString(),
-            'details': details,
-          });
-
-          var result = jsonDecode(response.body);
-
-          if (result['success']) {
-            showCustomSnackBar(message: 'Payment Successful', isSuccess: true);
-            Get.offAllNamed(Routes.MAIN);
-          } else {
-            showCustomSnackBar(message: result['message']);
-          }
-        },
-        onFailure: (v) {
-          showCustomSnackBar(
-              message:
-                  'Payment Failed: ${v.message}'); // Display the error message
-        },
-      );
-    } catch (e) {
-      showCustomSnackBar(message: e.toString());
-    }
-  }
 }
