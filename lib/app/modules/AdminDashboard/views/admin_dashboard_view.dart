@@ -34,13 +34,16 @@ class AdminDashboardView extends StatelessWidget {
                         'Total Income: ${controller.statsResponse!.stats!.totalIncome}',
                       ),
                       _buildDataContainer(
-                        'Total Blood Requests: ${controller.statsResponse!.stats!.totalBloodRequest}',
+                        'Total Blood Requests: ${controller.statsResponse!.stats!.totalBloodRequests}',
                       ),
                       _buildDataContainer(
                         'Total Donors: ${controller.statsResponse!.stats!.totalDonors}',
                       ),
                       _buildDataContainer(
                         'Total Users: ${controller.statsResponse!.stats!.totalUsers}',
+                      ),
+                      _buildDataContainer(
+                        'Total UniqueDonors: ${controller.statsResponse!.stats!.totalUniqueDonors}',
                       ),
                     ],
                   ),
@@ -59,18 +62,24 @@ class AdminDashboardView extends StatelessWidget {
     );
   }
 
-  // Method to build a container for data display
   Widget _buildDataContainer(String data) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10.0),
+    return Card(
+      elevation: 15,
+      margin: EdgeInsets.symmetric(
+          horizontal: 10, vertical: 15), // Adjust vertical margin
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(
-        data,
-        style: TextStyle(fontSize: 20),
+      child: Container(
+        // Wrap the Padding with a Container
+        padding: EdgeInsets.all(12.0),
+        height: 80, // Set desired height
+        child: Center(
+          child: Text(
+            data,
+            style: TextStyle(fontSize: 19),
+          ),
+        ),
       ),
     );
   }
@@ -94,11 +103,14 @@ class AdminDashboardView extends StatelessWidget {
         controller.user?.user?.fullName ?? ''; // Get the user's full name
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '$greeting, $fullName', // Display the greeting and full name
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Text(
+            '$greeting, $fullName', // Display the greeting and full name
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
         ),
         SizedBox(height: 10),
       ],

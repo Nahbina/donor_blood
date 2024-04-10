@@ -35,31 +35,35 @@ class Statics {
 class Stats {
   final String? noOfEvents;
   final String? totalIncome;
-  final String? totalBloodRequest;
+  final String? totalBloodRequests;
   final String? totalDonors;
   final String? totalUsers;
+  final String? totalUniqueDonors;
 
   Stats({
     this.noOfEvents,
     this.totalIncome,
-    this.totalBloodRequest,
+    this.totalBloodRequests,
     this.totalDonors,
     this.totalUsers,
+    this.totalUniqueDonors,
   });
 
   factory Stats.fromJson(Map<String, dynamic> json) => Stats(
         noOfEvents: json["no_of_events"],
         totalIncome: json["totalIncome"],
-        totalBloodRequest: json["totalBloodRequest"],
+        totalBloodRequests: json["totalBloodRequests"],
         totalDonors: json["totalDonors"],
         totalUsers: json["totalUsers"],
+        totalUniqueDonors: json["totalUniqueDonors"],
       );
 
   Map<String, dynamic> toJson() => {
         "no_of_events": noOfEvents,
         "totalIncome": totalIncome,
-        "totalBloodRequest": totalBloodRequest,
+        "totalBloodRequests": totalBloodRequests,
         "totalDonors": totalDonors,
         "totalUsers": totalUsers,
+        "totalUniqueDonors": totalUniqueDonors,
       };
 }

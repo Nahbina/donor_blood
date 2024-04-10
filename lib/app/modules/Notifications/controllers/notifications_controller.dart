@@ -39,9 +39,9 @@ class NotificationsController extends GetxController {
         //   isSuccess: true,
         // );
       } else {
-        showCustomSnackBar(
-          message: notificationResponse?.message ?? '',
-        );
+        // showCustomSnackBar(
+        //   message: notificationResponse?.message ?? '',
+        // );
       }
     } catch (e) {
       print(e);

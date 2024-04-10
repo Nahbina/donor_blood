@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart'; // Import Lottie package for animations
 
 import '../controllers/notifications_controller.dart';
 
 class NotificationsView extends GetView<NotificationsController> {
   const NotificationsView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,11 +26,17 @@ class NotificationsView extends GetView<NotificationsController> {
           if (controller.notificationResponse?.notifications?.isEmpty ?? true) {
             return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    height: 100,
+                    height: 400,
+                    child: Lottie.asset(
+                      'assets/lottie/notification.json',
+                      height: 200,
+                      repeat: true,
+                    ),
                   ),
-                  Text('No notifications', style: TextStyle(fontSize: 20)),
+                  // Text('No notifications', style: TextStyle(fontSize: 20)),
                 ],
               ),
             );
@@ -57,7 +64,10 @@ class NotificationsView extends GetView<NotificationsController> {
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [],
+                  children: [
+                    Text('Date: $formattedDate'), // Display formatted date
+                    // Add more information as needed
+                  ],
                 ),
               );
             },

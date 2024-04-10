@@ -33,13 +33,13 @@ class ViewEventView extends StatelessWidget {
         children: [
           Text(
             event.eventName ?? '',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
           ),
           SizedBox(height: 20),
+          _buildEventDetailRow('ID', event.id ?? ''), // Add ID to event details
           _buildEventDetailRow('Date', event.eventDate?.toString() ?? ''),
           _buildEventDetailRow('Location', event.eventLocation ?? ''),
           _buildEventDetailRow('Time', event.eventTime ?? ''),
-          _buildEventDetailRow('ID', event.id ?? ''), // Add ID to event details
         ],
       ),
     );
@@ -78,7 +78,7 @@ class ViewEventView extends StatelessWidget {
                 child: ListTile(
                   title: Text(
                     event.eventName ?? '',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,9 +87,6 @@ class ViewEventView extends StatelessWidget {
                           'Date', event.eventDate?.toString() ?? ''),
                       _buildEventDetailRow(
                           'Location', event.eventLocation ?? ''),
-                      _buildEventDetailRow('Time', event.eventTime ?? ''),
-                      _buildEventDetailRow(
-                          'ID', event.id ?? ''), // Add ID to event details
                     ],
                   ),
                   trailing: ElevatedButton(

@@ -44,6 +44,8 @@ class Request {
   final int? donorId;
   final String? status;
   final DateTime? requestDate;
+  final String? requesterName;
+  final String? requesterEmail;
 
   Request({
     this.requestId,
@@ -51,22 +53,20 @@ class Request {
     this.donorId,
     this.status,
     this.requestDate,
+    this.requesterName,
+    this.requesterEmail,
   });
 
   factory Request.fromJson(Map<String, dynamic> json) => Request(
-        requestId: json["request_id"] is int
-            ? json["request_id"]
-            : int.tryParse(json["request_id"]),
-        userId: json["user_id"] is int
-            ? json["user_id"]
-            : int.tryParse(json["user_id"]),
-        donorId: json["donor_id"] is int
-            ? json["donor_id"]
-            : int.tryParse(json["donor_id"]),
+        requestId: json["request_id"],
+        userId: json["user_id"],
+        donorId: json["donor_id"],
         status: json["status"],
         requestDate: json["request_date"] == null
             ? null
             : DateTime.parse(json["request_date"]),
+        requesterName: json["requester_name"],
+        requesterEmail: json["requester_email"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -76,5 +76,7 @@ class Request {
         "status": status,
         "request_date":
             "${requestDate!.year.toString().padLeft(4, '0')}-${requestDate!.month.toString().padLeft(2, '0')}-${requestDate!.day.toString().padLeft(2, '0')}",
+        "requester_name": requesterName,
+        "requester_email": requesterEmail,
       };
 }

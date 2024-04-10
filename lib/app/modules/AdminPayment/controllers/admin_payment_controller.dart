@@ -1,68 +1,55 @@
 import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:http/http.dart' as http;
-import '../../../routes/app_pages.dart';
+import '../../../models/viewPayment.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/memory.dart';
 
 class AdminPaymentController extends GetxController {
-  //TODO: Implement AdminPaymentController
+  // Define an observable list to store payments
+  RxList<Payment> payments = <Payment>[].obs;
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
+    // Fetch payment details when the controller is initialized
+    viewPayments();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
-
-  void makePayment(String userId, int amount, String details) {
+  // Function to fetch payment details from the server
+  Future<void> viewPayments() async {
     try {
-      PaymentConfig config = PaymentConfig(
-        productName: "Donation",
-        amount: 100 * 100, // Convert amount to paisa
-        productIdentity: userId,
-      );
-      KhaltiScope.of(Get.context!).pay(
-        config: config,
-        preferences: [PaymentPreference.khalti],
-        onSuccess: (v) async {
-          Uri url = Uri.http(ipAddress, 'donor_blood_api/makePayment.php');
-          var response = await http.post(url, body: {
-            'token': Memory.getToken() ?? '',
-            'user_id': userId,
-            'amount': amount.toString(),
-            'details': details,
-          });
+      var url = Uri.http(ipAddress, 'donor_blood_api/admin/viewPayment.php');
+      var token = await Memory.getToken();
 
-          var result = jsonDecode(response.body);
+      if (token == null) {
+        showCustomSnackBar(
+          message: 'User not authenticated.',
+          isSuccess: false,
+        );
+        return;
+      }
 
-          if (result['success']) {
-            showCustomSnackBar(message: 'Payment Successful', isSuccess: true);
-            Get.offAllNamed(Routes.MAIN);
-          } else {
-            showCustomSnackBar(message: result['message']);
-          }
-        },
-        onFailure: (v) {
-          showCustomSnackBar(
-              message:
-                  'Payment Failed: ${v.message}'); // Display the error message
-        },
+      var response = await http.post(
+        url,
+        body: {'token': token},
       );
-    } catch (e) {
-      showCustomSnackBar(message: e.toString());
+
+      // Check if the request was successful
+      if (response.statusCode == 200) {
+        // Parse the JSON response into Dart objects
+        final jsonResponse = json.decode(response.body);
+        final viewPayment = ViewPayment.fromJson(jsonResponse);
+
+        // Update the payments list with the fetched data
+        payments.assignAll(viewPayment.payments!);
+      } else {
+        // If the request failed, show an error message
+        throw Exception('Failed to load payment details');
+      }
+    } catch (error) {
+      // If an error occurs during the process, show the error message
+      print(error);
     }
   }
 }

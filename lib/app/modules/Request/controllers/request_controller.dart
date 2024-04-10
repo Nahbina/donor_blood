@@ -52,10 +52,10 @@ class RequestController extends GetxController {
           );
         } else {
           // Show snackbar for failed request
-          showCustomSnackBar(
-            message: bloodRequest.message ?? 'Failed to fetch blood requests',
-            isSuccess: false,
-          );
+          // showCustomSnackBar(
+          //   message: bloodRequest.message ?? 'Failed to fetch blood requests',
+          //   isSuccess: false,
+          // );
         }
       } else {
         // Show snackbar for failed request

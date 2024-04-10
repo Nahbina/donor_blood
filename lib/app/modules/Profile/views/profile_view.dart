@@ -89,7 +89,7 @@ class ProfileView extends GetView<ProfileController> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.language),
-                    title: const Text('Language'),
+                    title: const Text('My donation'),
                     onTap: () {
                       // Add logic to change language
                     },

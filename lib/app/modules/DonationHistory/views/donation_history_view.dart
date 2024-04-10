@@ -19,18 +19,56 @@ class DonationHistoryView extends GetView<DonationHistoryController> {
       body: Obx(
         () {
           if (controller.donationHistoryList.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.history,
+                    size: 100,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'No donation history found.',
+                    style: TextStyle(fontSize: 20, color: Colors.grey),
+                  ),
+                ],
+              ),
             );
           } else {
             return ListView.builder(
               itemCount: controller.donationHistoryList.length,
               itemBuilder: (context, index) {
                 final donation = controller.donationHistoryList[index];
-                return ListTile(
-                  title: Text('Donation ID: ${donation.donationHistoryId}'),
-                  subtitle: Text('Donor ID: ${donation.donorId}'),
-                  // Add more fields as needed
+                return Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListTile(
+                    title: Text(
+                      'Donation ID: ${donation.donationHistoryId}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Donor ID: ${donation.donorId}'),
+                        Text('Requester Name: ${donation.requesterName}'),
+                        Text('Requester Email: ${donation.requesterEmail}'),
+                        Text('Donation Date: ${donation.donationDate}'),
+                        Text('Created At: ${donation.createdAt}'),
+                      ],
+                    ),
+                    // trailing: Icon(
+                    //   Icons.arrow_forward_ios,
+                    //   color: Colors.grey,
+                    // ),
+                    onTap: () {
+                      // Add your onTap functionality here
+                    },
+                  ),
                 );
               },
             );

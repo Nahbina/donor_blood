@@ -9,6 +9,7 @@ import '../../../utils/memory.dart';
 class DonationHistoryController extends GetxController {
   final RxList<DonationHistoryElement> donationHistoryList =
       <DonationHistoryElement>[].obs;
+  RxBool isLoading = true.obs;
 
   @override
   void onInit() {
@@ -42,10 +43,7 @@ class DonationHistoryController extends GetxController {
           donationHistoryList.assignAll(donationHistory.donationHistory ?? []);
           Get.snackbar('Success', 'Donation history fetched successfully',
               backgroundColor: Colors.green);
-        } else {
-          Get.snackbar('Error',
-              donationHistory.message ?? 'Failed to fetch donation history');
-        }
+        } else {}
       } else {
         Get.snackbar(
             'Error', 'Failed to load donation history: ${response.statusCode}');

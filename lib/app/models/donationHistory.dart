@@ -28,8 +28,6 @@ class DonationHistory {
                 .map((x) => DonationHistoryElement.fromJson(x))),
       );
 
-  get message => null;
-
   Map<String, dynamic> toJson() => {
         "success": success,
         "donation_history": donationHistory == null
@@ -44,6 +42,8 @@ class DonationHistoryElement {
   final int? requestId;
   final DateTime? donationDate;
   final DateTime? createdAt;
+  final String? requesterName;
+  final String? requesterEmail;
 
   DonationHistoryElement({
     this.donationHistoryId,
@@ -51,6 +51,8 @@ class DonationHistoryElement {
     this.requestId,
     this.donationDate,
     this.createdAt,
+    this.requesterName,
+    this.requesterEmail,
   });
 
   factory DonationHistoryElement.fromJson(Map<String, dynamic> json) =>
@@ -64,6 +66,8 @@ class DonationHistoryElement {
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
+        requesterName: json["requester_name"],
+        requesterEmail: json["requester_email"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -73,5 +77,7 @@ class DonationHistoryElement {
         "donation_date":
             "${donationDate!.year.toString().padLeft(4, '0')}-${donationDate!.month.toString().padLeft(2, '0')}-${donationDate!.day.toString().padLeft(2, '0')}",
         "created_at": createdAt?.toIso8601String(),
+        "requester_name": requesterName,
+        "requester_email": requesterEmail,
       };
 }
