@@ -1,11 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-
-// Allow the following methods from any origin
 header("Access-Control-Allow-Methods: POST");
-
-// Allow the following headers from any origin
 header("Access-Control-Allow-Headers: Content-Type");
+
 // Include database connection
 include "../database/database_connection.php";
 
@@ -36,9 +33,10 @@ if (!isAdmin($CON, $token)) {
 // Initialize variables
 $no_of_events = 0;
 $totalIncome = 0;
-$totalMonthlyIncome = 0;
+$totalBloodRequests = 0;
 $totalDonors = 0;
 $totalUsers = 0;
+$totalUniqueDonors = 0; // Variable to store the count of unique donors
 
 // Fetch stats
 $sql = "SELECT COUNT(*) AS totalEvents FROM events";
@@ -67,8 +65,6 @@ if ($result) {
     die();
 }
 
-
-
 $sql = "SELECT COUNT(*) AS totalBloodRequests FROM blood_requests";
 $result = mysqli_query($CON, $sql);
 if ($result) {
@@ -95,6 +91,20 @@ if ($result) {
     die();
 }
 
+// Fetch count of unique donors based on blood types (A-, B-, AB-, O-)
+$sql = "SELECT COUNT(*) AS totalUniqueDonors FROM (SELECT DISTINCT blood_type FROM donors WHERE blood_type IN ('A-', 'B-', 'AB-', 'O-')) AS unique_donors";
+$result = mysqli_query($CON, $sql);
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $totalUniqueDonors = $row['totalUniqueDonors'];
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to fetch total unique donors!"
+    ]);
+    die();
+}
+
 $sql = "SELECT COUNT(*) AS totalUsers FROM users WHERE role = 'user'";
 $result = mysqli_query($CON, $sql);
 if ($result) {
@@ -114,10 +124,10 @@ echo json_encode([
     "stats" => [
         "no_of_events" => $no_of_events,
         "totalIncome" => $totalIncome,
-        
-        "totalBloodRequest" => $totalBloodRequests,
+        "totalBloodRequests" => $totalBloodRequests,
         "totalDonors" => $totalDonors,
-        "totalUsers" => $totalUsers
+        "totalUsers" => $totalUsers,
+        "totalUniqueDonors" => $totalUniqueDonors // Include count of unique donors
     ]
 ]);
 ?>

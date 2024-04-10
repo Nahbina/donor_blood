@@ -57,7 +57,11 @@ if (!$isAdmin) {
 
 // Fetch donation history based on donor ID (if applicable)
 if (!$isAdmin) {
-    $sql = "SELECT * FROM donation_history WHERE donor_id = ?"; 
+    $sql = "SELECT donation_history.*, users.full_name AS requester_name, users.email AS requester_email
+            FROM donation_history 
+            INNER JOIN blood_requests ON donation_history.request_id = blood_requests.request_id
+            INNER JOIN users ON blood_requests.user_id = users.user_id
+            WHERE donation_history.donor_id = ?"; 
     $stmt = mysqli_prepare($CON, $sql);
 
     // Bind parameter and execute the statement
@@ -86,7 +90,10 @@ if (!$isAdmin) {
     mysqli_stmt_close($stmt);
 } else {
     // Fetch donation history for all donors (admin view)
-    $sql = "SELECT * FROM donation_history"; 
+    $sql = "SELECT donation_history.*, users.full_name AS requester_name, users.email AS requester_email
+            FROM donation_history 
+            INNER JOIN blood_requests ON donation_history.request_id = blood_requests.request_id
+            INNER JOIN users ON blood_requests.user_id = users.user_id"; 
     $result = mysqli_query($CON, $sql);
 
     if ($result) {

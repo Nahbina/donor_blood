@@ -28,7 +28,8 @@ if ($userId == null) {
 
 // Check if the user is an admin
 if (isAdmin($CON, $token)) {
-    $sql = "SELECT * FROM blood_requests";
+    $sql = "SELECT blood_requests.*, users.full_name AS requester_name, users.email AS requester_email FROM blood_requests 
+            INNER JOIN users ON blood_requests.user_id = users.user_id";
     $result = mysqli_query($CON, $sql);
 
     if (!$result) {
@@ -70,7 +71,7 @@ if (isAdmin($CON, $token)) {
     if (!$row) {
         echo json_encode([
             "success" => false,
-            "message" => "Donor ID not found for the user!"
+            "message" => "User is not donor!"
         ]);
         die();
     }
@@ -78,7 +79,9 @@ if (isAdmin($CON, $token)) {
     $donorId = $row['donor_id'];
 
     // Retrieve blood requests for the donor
-    $sql = "SELECT * FROM blood_requests WHERE donor_id = ?";
+    $sql = "SELECT blood_requests.*, users.full_name AS requester_name, users.email AS requester_email  FROM blood_requests 
+            INNER JOIN users ON blood_requests.user_id = users.user_id
+            WHERE donor_id = ?";
     $stmt = mysqli_prepare($CON, $sql);
     mysqli_stmt_bind_param($stmt, "i", $donorId);
     mysqli_stmt_execute($stmt);
