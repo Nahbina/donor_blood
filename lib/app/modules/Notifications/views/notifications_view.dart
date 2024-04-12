@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart'; // Import Lottie package for animations
 
 import '../controllers/notifications_controller.dart';
 
@@ -28,15 +27,15 @@ class NotificationsView extends GetView<NotificationsController> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 400,
-                    child: Lottie.asset(
-                      'assets/lottie/notification.json',
-                      height: 200,
-                      repeat: true,
-                    ),
-                  ),
-                  // Text('No notifications', style: TextStyle(fontSize: 20)),
+                  // SizedBox(
+                  //   height: 400,
+                  //   child: Lottie.asset(
+                  //     'assets/lottie/notification.json',
+                  //     height: 200,
+                  //     repeat: true,
+                  //   ),
+                  // ),
+                  Text('No notifications', style: TextStyle(fontSize: 20)),
                 ],
               ),
             );

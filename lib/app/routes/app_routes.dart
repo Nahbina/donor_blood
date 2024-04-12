@@ -21,6 +21,8 @@ abstract class Routes {
   static const ADMIN_REQUEST = _Paths.ADMIN_REQUEST;
   static const DONATION_HISTORY = _Paths.DONATION_HISTORY;
   static const ADMIN_PAYMENT = _Paths.ADMIN_PAYMENT;
+  static const ADMIN_USERS = _Paths.ADMIN_USERS;
+  static const ADMIN_RATINGS = _Paths.ADMIN_RATINGS;
 }
 
 abstract class _Paths {
@@ -43,4 +45,6 @@ abstract class _Paths {
   static const ADMIN_REQUEST = '/admin-request';
   static const DONATION_HISTORY = '/donation-history';
   static const ADMIN_PAYMENT = '/admin-payment';
+  static const ADMIN_USERS = '/admin-users';
+  static const ADMIN_RATINGS = '/admin-ratings';
 }

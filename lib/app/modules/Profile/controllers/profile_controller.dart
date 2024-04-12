@@ -12,11 +12,11 @@ class ProfileController extends GetxController {
   User? user; // Change userResponse to User
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-
+  final GlobalKey<FormState> feedbackFormKey = GlobalKey<FormState>();
   final count = 0.obs;
   var oldPasswordController = TextEditingController();
   var newPasswordController = TextEditingController();
-
+  var rating = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -130,6 +130,54 @@ class ProfileController extends GetxController {
     } catch (e) {
       showCustomSnackBar(
         message: 'Something went wrong',
+      );
+    }
+  }
+
+  Future<void> addRatings(String rating, String comment) async {
+    try {
+      Uri url = Uri.http(ipAddress, 'donor_blood_api/giveRatings.php');
+
+      var response = await http.post(url, body: {
+        "token": Memory.getToken(),
+        "rating": rating,
+        "comment": comment,
+      });
+
+      if (response.statusCode == 200) {
+        // Parse the response body as JSON
+        var jsonResponse = jsonDecode(response.body);
+
+        // Check if the response contains a 'success' field
+        if (jsonResponse.containsKey('success')) {
+          if (jsonResponse['success']) {
+            // If 'success' is true, show success message
+            showCustomSnackBar(
+              message: jsonResponse['message'] ?? 'Rating added successfully',
+              isSuccess: true,
+            );
+          } else {
+            // If 'success' is false, show error message
+            showCustomSnackBar(
+              message: jsonResponse['message'] ?? 'Failed to add rating',
+            );
+          }
+        } else {
+          // If 'success' field is missing, show error message
+          showCustomSnackBar(
+            message: 'Unexpected response format',
+          );
+        }
+      } else {
+        // If response status code is not 200, show error message
+        showCustomSnackBar(
+          message: 'Failed to add rating: ${response.reasonPhrase}',
+        );
+      }
+    } catch (e) {
+      // Catch any exceptions and show error message
+      showCustomSnackBar(
+        message: 'Error: $e',
       );
     }
   }

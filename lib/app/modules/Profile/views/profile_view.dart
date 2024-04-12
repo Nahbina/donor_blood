@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
@@ -95,6 +96,14 @@ class ProfileView extends GetView<ProfileController> {
                     },
                   ),
                   ListTile(
+                    leading: const Icon(Icons.language),
+                    title: const Text('Ratings'),
+                    onTap: () {
+                      _showRatingsDialog(
+                          context); // Call the function to open the rating dialog
+                    },
+                  ),
+                  ListTile(
                     leading: const Icon(Icons.lock),
                     title: const Text('Change Password'),
                     onTap: () {
@@ -182,6 +191,63 @@ class EditProfileForm extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showRatingsDialog(BuildContext context) {
+  final profileController = Get.find<ProfileController>();
+
+  // Text controller for the feedback input field
+  TextEditingController feedbackController = TextEditingController();
+
+  Get.defaultDialog(
+    title: 'Submit Feedback',
+    content: Form(
+      key: profileController.feedbackFormKey,
+      child: Column(
+        children: [
+          const Text(
+            'Rate Us',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          RatingBar.builder(
+            initialRating: profileController.rating.value.toDouble(),
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+            itemBuilder: (context, _) => const Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            onRatingUpdate: (rating) {
+              profileController.rating.value = rating.toInt();
+            },
+          ),
+          TextFormField(
+            controller: feedbackController,
+            decoration: const InputDecoration(labelText: 'Your Feedback'),
+            validator: (value) =>
+                value!.isEmpty ? 'Please enter your feedback' : null,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              if (profileController.feedbackFormKey.currentState!.validate()) {
+                profileController.addRatings(
+                  profileController.rating.value.toString(),
+                  feedbackController.text,
+                );
+                Get.back();
+              }
+            },
+            child: const Text('Submit Feedback'),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class CHANGE_PASSWORD extends StatefulWidget {

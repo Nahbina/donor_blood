@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../models/Event.dart';
 import '../controllers/event_controller.dart';
 
 class EventView extends StatefulWidget {
@@ -47,7 +48,13 @@ class _EventViewState extends State<EventView> {
                                   IconButton(
                                     icon: const Icon(Icons.edit),
                                     onPressed: () {
-                                      _eventController.editEvent(event.id!);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditEventPage(event: event),
+                                        ),
+                                      );
                                     },
                                   ),
                                   IconButton(
@@ -102,30 +109,68 @@ class _EventViewState extends State<EventView> {
   }
 
   void _showAddEventDialog(BuildContext context) {
+    TextEditingController idController = TextEditingController();
+    TextEditingController eventNameController = TextEditingController();
+    TextEditingController eventDateController = TextEditingController();
+    TextEditingController eventLocationController = TextEditingController();
+    TextEditingController eventTimeController = TextEditingController();
+    TextEditingController eventDescriptionController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Add Event"),
-          content: const SingleChildScrollView(
+          content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 TextField(
+                  controller: idController,
                   decoration: InputDecoration(labelText: 'Id'),
                 ),
                 TextField(
+                  controller: eventNameController,
                   decoration: InputDecoration(labelText: 'Event Name'),
                 ),
-                TextField(
+                TextFormField(
+                  controller: eventDateController,
                   decoration: InputDecoration(labelText: 'Event Date'),
+                  keyboardType: TextInputType.datetime,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+                    if (pickedDate != null) {
+                      // Format the picked date as 'yyyy-MM-dd' before setting it to the text field
+                      eventDateController.text =
+                          pickedDate.toString().substring(0, 10);
+                    }
+                  },
+                ),
+                TextFormField(
+                  controller: eventTimeController,
+                  decoration: InputDecoration(labelText: 'Event Time'),
+                  keyboardType: TextInputType.datetime,
+                  onTap: () async {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (pickedTime != null) {
+                      // Format the picked time as 'HH:mm' before setting it to the text field
+                      eventTimeController.text = pickedTime.format(context);
+                    }
+                  },
                 ),
                 TextField(
+                  controller: eventLocationController,
                   decoration: InputDecoration(labelText: 'Event Location'),
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Event Time'),
-                ),
-                TextField(
+                  controller: eventDescriptionController,
                   decoration: InputDecoration(labelText: 'Event Description'),
                 ),
               ],
@@ -141,15 +186,135 @@ class _EventViewState extends State<EventView> {
             TextButton(
               child: const Text("Save"),
               onPressed: () {
-                // Add logic to save the event
-                // For example, call a method in your controller
-                // _eventController.saveEvent(event);
+                Event newEvent = Event(
+                  id: idController.text,
+                  eventName: eventNameController.text,
+                  eventDate: DateTime.parse(eventDateController.text),
+                  eventLocation: eventLocationController.text,
+                  eventTime: eventTimeController.text,
+                  eventDescription: eventDescriptionController.text,
+                );
+                // Add the new event to the events list
+                _eventController.events.add(newEvent);
+                // Notify listeners of the change
+                _eventController.update();
                 Navigator.of(context).pop();
               },
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class EditEventPage extends StatefulWidget {
+  final Event event;
+
+  EditEventPage({Key? key, required this.event}) : super(key: key);
+
+  @override
+  _EditEventPageState createState() => _EditEventPageState();
+}
+
+class _EditEventPageState extends State<EditEventPage> {
+  late EventController _eventController;
+  TextEditingController eventNameController = TextEditingController();
+  TextEditingController eventDateController = TextEditingController();
+  TextEditingController eventLocationController = TextEditingController();
+  TextEditingController eventTimeController = TextEditingController();
+  TextEditingController eventDescriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _eventController = Get.find<EventController>();
+    eventNameController.text = widget.event.eventName ?? '';
+    eventDateController.text = widget.event.eventDate?.toString() ?? '';
+    eventLocationController.text = widget.event.eventLocation ?? '';
+    eventTimeController.text = widget.event.eventTime ?? '';
+    eventDescriptionController.text = widget.event.eventDescription ?? '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit Event'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: eventNameController,
+                decoration: InputDecoration(labelText: 'Event Name'),
+              ),
+              TextFormField(
+                controller: eventDateController,
+                decoration: InputDecoration(labelText: 'Event Date'),
+                keyboardType: TextInputType.datetime,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: widget.event.eventDate ?? DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (pickedDate != null) {
+                    setState(() {
+                      eventDateController.text = pickedDate.toString();
+                    });
+                  }
+                },
+              ),
+              TextFormField(
+                controller: eventTimeController,
+                decoration: InputDecoration(labelText: 'Event Time'),
+                keyboardType: TextInputType.datetime,
+                onTap: () async {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  if (pickedTime != null) {
+                    setState(() {
+                      eventTimeController.text = pickedTime.format(context);
+                    });
+                  }
+                },
+              ),
+              TextField(
+                controller: eventLocationController,
+                decoration: InputDecoration(labelText: 'Event Location'),
+              ),
+              TextField(
+                controller: eventDescriptionController,
+                decoration: InputDecoration(labelText: 'Event Description'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Update the event with the edited data
+          Event updatedEvent = Event(
+            id: widget.event.id,
+            eventName: eventNameController.text,
+            eventDate: DateTime.parse(eventDateController.text),
+            eventLocation: eventLocationController.text,
+            eventTime: eventTimeController.text,
+            eventDescription: eventDescriptionController.text,
+          );
+          // Call the editEvent method of the EventController to trigger the update
+          _eventController.editEvent(updatedEvent);
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.save),
+      ),
     );
   }
 }

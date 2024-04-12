@@ -65,12 +65,22 @@ class EventController extends GetxController {
     }
   }
 
-  void addEvent(String id) async {
+  void addEvent(Event newEvent) async {
     try {
       var url = Uri.http(ipAddress, 'donor_blood_api/admin/addEvent.php');
       var response = await http.post(url, body: {
-        'token': Memory.getToken(),
-        'id': id,
+        'token': await Memory.getToken(),
+        'id': newEvent.id ?? '', // Ensure id is set, or provide a default value
+        'event_name': newEvent.eventName ??
+            '', // Ensure eventName is set, or provide a default value
+        'event_date': newEvent.eventDate?.toString() ??
+            '', // Ensure eventDate is set, or provide a default value
+        'event_location': newEvent.eventLocation ??
+            '', // Ensure eventLocation is set, or provide a default value
+        'event_description': newEvent.eventDescription ??
+            '', // Ensure eventDescription is set, or provide a default value
+        'event_time': newEvent.eventTime ??
+            '', // Ensure eventTime is set, or provide a default value
       });
 
       if (response.statusCode == 200) {
@@ -100,30 +110,55 @@ class EventController extends GetxController {
     }
   }
 
-  void editEvent(String id) async {
+  void editEvent(Event event) async {
     try {
       var url = Uri.http(ipAddress, 'donor_blood_api/admin/editEvent.php');
       var response = await http.post(url, body: {
-        'token': Memory.getToken(),
-        'id': id,
+        'token': await Memory.getToken(),
+        'id': event.id ?? '',
+        'event_name': event.eventName ?? '',
+        'event_date': event.eventDate?.toString() ?? '',
+        'event_location': event.eventLocation ?? '',
+        'event_description': event.eventDescription ?? '',
+        'event_time': event.eventTime ?? '',
       });
 
-      var result = jsonDecode(response.body);
+      print('Edit Event Response Body: ${response.body}');
 
-      if (result['success']) {
-        Get.back();
-        showCustomSnackBar(
-          message: result['message'],
-          isSuccess: true,
-        );
+      if (response.statusCode == 200) {
+        var result = jsonDecode(response.body);
+
+        if (result['success']) {
+          // Find the index of the edited event in the events list
+          int index = events.indexWhere((e) => e.id == event.id);
+          if (index != -1) {
+            // Update the event in the list with the edited data
+            events[index] = event;
+          }
+          // Notify listeners of the change
+          update();
+          Get.back();
+          showCustomSnackBar(
+            message: result['message'],
+            isSuccess: true,
+          );
+        } else {
+          showCustomSnackBar(
+            message: result['message'],
+          );
+        }
       } else {
         showCustomSnackBar(
-          message: result['message'],
+          message:
+              'Failed to edit event. Server returned status code: ${response.statusCode}',
+          isSuccess: false,
         );
       }
     } catch (e) {
+      print('Error editing event: $e');
       showCustomSnackBar(
-        message: 'Something went wrong',
+        message: 'Failed to edit event: $e',
+        isSuccess: false,
       );
     }
   }

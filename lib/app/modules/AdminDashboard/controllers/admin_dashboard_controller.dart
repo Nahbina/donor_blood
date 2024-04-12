@@ -24,15 +24,14 @@ class AdminDashboardController extends GetxController {
       var response = await http.post(url, body: {"token": Memory.getToken()});
 
       if (response.statusCode == 200) {
-        statsResponse = staticsFromJson(response.body);
-        update();
-
-        if (statsResponse?.success ?? false) {
-          // Data successfully fetched
+        var newStatsResponse = staticsFromJson(response.body);
+        if (newStatsResponse.success ?? false) {
+          statsResponse = newStatsResponse;
+          update(); // Trigger UI update after fetching new data
         } else {
           // Handle error message from the server
           showCustomSnackBar(
-            message: statsResponse?.message ?? '',
+            message: newStatsResponse.message ?? '',
           );
         }
       } else {
@@ -80,6 +79,4 @@ class AdminDashboardController extends GetxController {
       );
     }
   }
-
-  void increment() => count.value++;
 }
