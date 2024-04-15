@@ -6,52 +6,60 @@ header("Access-Control-Allow-Headers: Content-Type");
 include "./database/database_connection.php";
 include "./helpers/auth.php";
 
+// Check if token is provided
 if (!isset($_POST['token'])) {
     echo json_encode([
         "success" => false,
         "message" => "Token not found!"
     ]);
-    die();
+    exit(); // Use exit() instead of die() for consistency
 }
 
+// Extract the token from the request
 $token = $_POST['token'];
 
-if (!getUserId($CON, $token)) {
+// Check if the user associated with the token is authenticated
+$user_id = getUserId($CON, $token);
+if (!$user_id) {
     echo json_encode([
         "success" => false,
         "message" => "Unauthorized access!"
     ]);
-    die();
+    exit(); // Use exit() instead of die() for consistency
 }
 
-if (isset($_POST['user_id'], $_POST['rating'], $_POST['created_at'])) {
-    $user_id = $_POST["user_id"];
-    $rating = $_POST["rating"];
-    $created_at = $_POST["created_at"];
- 
-    $sql = "INSERT INTO ratings (user_id, rating, created_at) VALUES (?, ?, ?)";
-    $stmt = mysqli_prepare($CON, $sql);
-    mysqli_stmt_bind_param($stmt, "iis", $user_id, $rating, $created_at);
-
-    $result = mysqli_stmt_execute($stmt);
-
-    if ($result) {
-        echo json_encode([
-            "success" => true,
-            "message" => "Rating inserted successfully!"
-        ]);
-    } else {
-        echo json_encode([
-            "success" => false,
-            "message" => "Failed to insert rating!"
-        ]);
-    }
-
-    mysqli_stmt_close($stmt);
-} else {
+// Check if rating and comment are provided
+if (!isset($_POST['rating'], $_POST['comment'])) {
     echo json_encode([
         "success" => false,
         "message" => "All required rating details are not set"
     ]);
+    exit(); // Use exit() instead of die() for consistency
 }
+
+// Extract rating and comment from the request
+$rating = $_POST["rating"];
+$comment = $_POST['comment'];
+$created_at = date('Y-m-d H:i:s'); // Get the current date and time in MySQL format
+
+// Prepare and execute the SQL query to insert rating
+$sql = "INSERT INTO ratings (user_id, rating, created_at, comment) VALUES (?, ?, ?, ?)";
+$stmt = mysqli_prepare($CON, $sql);
+mysqli_stmt_bind_param($stmt, "iiss", $user_id, $rating, $created_at, $comment);
+$result = mysqli_stmt_execute($stmt);
+
+// Check if the query execution was successful
+if ($result) {
+    echo json_encode([
+        "success" => true,
+        "message" => "Rating inserted successfully!"
+    ]);
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to insert rating!"
+    ]);
+}
+
+mysqli_stmt_close($stmt); // Close the prepared statement
 ?>
