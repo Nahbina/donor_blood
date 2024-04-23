@@ -66,12 +66,12 @@ class AdminRatingsView extends GetView<AdminRatingsController> {
                           DataCell(Text(rating.email ?? '')),
                           DataCell(Text(rating.createdAt?.toString() ?? '')),
                           DataCell(
-                            ElevatedButton(
+                            IconButton(
                               onPressed: () {
                                 _confirmDelete(
                                     context, rating.ratingId!, rating.userId!);
                               },
-                              child: const Text('Delete'),
+                              icon: Icon(Icons.delete),
                             ),
                           ),
                         ],

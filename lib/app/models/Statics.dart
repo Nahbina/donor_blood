@@ -34,10 +34,18 @@ class Statics {
 
 class Stats {
   final String? noOfEvents;
-  final String? totalIncome;
+  final dynamic totalIncome;
   final String? totalBloodRequests;
   final String? totalDonors;
   final String? totalUsers;
+  final String? totalAGroup;
+  final String? totalBGroup;
+  final String? totalAbGroup;
+  final String? totalOGroup;
+  final String? totalANegativeGroup;
+  final String? totalBNegativeGroup;
+  final String? totalAbNegativeGroup;
+  final String? totalONegativeGroup;
   final String? totalUniqueDonors;
 
   Stats({
@@ -46,6 +54,14 @@ class Stats {
     this.totalBloodRequests,
     this.totalDonors,
     this.totalUsers,
+    this.totalAGroup,
+    this.totalBGroup,
+    this.totalAbGroup,
+    this.totalOGroup,
+    this.totalANegativeGroup,
+    this.totalBNegativeGroup,
+    this.totalAbNegativeGroup,
+    this.totalONegativeGroup,
     this.totalUniqueDonors,
   });
 
@@ -55,6 +71,14 @@ class Stats {
         totalBloodRequests: json["totalBloodRequests"],
         totalDonors: json["totalDonors"],
         totalUsers: json["totalUsers"],
+        totalAGroup: json["totalAGroup"],
+        totalBGroup: json["totalBGroup"],
+        totalAbGroup: json["totalABGroup"],
+        totalOGroup: json["totalOGroup"],
+        totalANegativeGroup: json["totalA_Negative_Group"],
+        totalBNegativeGroup: json["totalB_Negative_Group"],
+        totalAbNegativeGroup: json["totalAB_Negative_Group"],
+        totalONegativeGroup: json["totalO_Negative_Group"],
         totalUniqueDonors: json["totalUniqueDonors"],
       );
 
@@ -64,6 +88,14 @@ class Stats {
         "totalBloodRequests": totalBloodRequests,
         "totalDonors": totalDonors,
         "totalUsers": totalUsers,
+        "totalAGroup": totalAGroup,
+        "totalBGroup": totalBGroup,
+        "totalABGroup": totalAbGroup,
+        "totalOGroup": totalOGroup,
+        "totalA_Negative_Group": totalANegativeGroup,
+        "totalB_Negative_Group": totalBNegativeGroup,
+        "totalAB_Negative_Group": totalAbNegativeGroup,
+        "totalO_Negative_Group": totalONegativeGroup,
         "totalUniqueDonors": totalUniqueDonors,
       };
 }

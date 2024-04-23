@@ -41,7 +41,7 @@ class Event {
   final String? eventLocation;
   final String? eventDescription;
   final String? eventTime;
-
+  final String? userId;
   Event({
     this.id,
     this.eventName,
@@ -49,6 +49,7 @@ class Event {
     this.eventLocation,
     this.eventDescription,
     this.eventTime,
+    this.userId,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
@@ -60,6 +61,7 @@ class Event {
         eventLocation: json["event_location"],
         eventDescription: json["event_description"],
         eventTime: json["event_time"],
+        userId: json["user_id"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -70,5 +72,6 @@ class Event {
         "event_location": eventLocation,
         "event_description": eventDescription,
         "event_time": eventTime,
+        "user_id": userId,
       };
 }

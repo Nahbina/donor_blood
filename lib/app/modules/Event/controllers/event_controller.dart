@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/Event.dart';
@@ -6,8 +7,7 @@ import '../../../utils/constants.dart';
 import '../../../utils/memory.dart';
 
 class EventController extends GetxController {
-  final RxList<Event> events = <Event>[].obs; // Specify type as Event
-  final count = 0.obs;
+  final RxList<Event> events = <Event>[].obs;
 
   @override
   void onInit() {
@@ -17,7 +17,7 @@ class EventController extends GetxController {
 
   Future<void> fetchEvents() async {
     try {
-      var url = Uri.http(ipAddress, 'donor_blood_api/getEvent.php');
+      var url = Uri.http(ipAddress, '/donor_blood_api/getEvent.php');
       var token = await Memory.getToken();
 
       if (token == null) {
@@ -39,7 +39,6 @@ class EventController extends GetxController {
 
         if (eventList.success ?? false) {
           events.assignAll(eventList.events ?? []);
-          update();
           showCustomSnackBar(
             message: 'Events fetched successfully',
             isSuccess: true,
@@ -65,47 +64,58 @@ class EventController extends GetxController {
     }
   }
 
-  void addEvent(Event newEvent) async {
+  Future<void> addEvent(Event newEvent) async {
     try {
       var url = Uri.http(ipAddress, 'donor_blood_api/admin/addEvent.php');
-      var response = await http.post(url, body: {
-        'token': await Memory.getToken(),
-        'id': newEvent.id ?? '', // Ensure id is set, or provide a default value
-        'event_name': newEvent.eventName ??
-            '', // Ensure eventName is set, or provide a default value
-        'event_date': newEvent.eventDate?.toString() ??
-            '', // Ensure eventDate is set, or provide a default value
-        'event_location': newEvent.eventLocation ??
-            '', // Ensure eventLocation is set, or provide a default value
-        'event_description': newEvent.eventDescription ??
-            '', // Ensure eventDescription is set, or provide a default value
-        'event_time': newEvent.eventTime ??
-            '', // Ensure eventTime is set, or provide a default value
-      });
+      var token = await Memory.getToken();
+
+      if (token == null) {
+        showCustomSnackBar(
+          message: 'User not authenticated.',
+          isSuccess: false,
+        );
+        return;
+      }
+
+      var response = await http.post(
+        url,
+        body: {
+          'token': token,
+          'event_name': newEvent.eventName ?? '',
+          'event_date': newEvent.eventDate?.toString() ?? '',
+          'event_location': newEvent.eventLocation ?? '',
+          'event_description': newEvent.eventDescription ?? '',
+          'event_time': newEvent.eventTime ?? '',
+        },
+      );
 
       if (response.statusCode == 200) {
-        var result = jsonDecode(response.body);
-
-        if (result['success']) {
-          Get.back();
+        var data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          // Since the backend adds the event, no need to add it locally
           showCustomSnackBar(
-            message: result['message'],
+            message: data['message'] ?? 'Event added successfully',
             isSuccess: true,
           );
         } else {
           showCustomSnackBar(
-            message: result['message'],
+            message: data['message'] ?? 'Failed to add event',
+            isSuccess: false,
           );
         }
       } else {
+        // Handle non-200 status code
         showCustomSnackBar(
-          message:
-              'Failed to add event. Server returned status code: ${response.statusCode}',
+          message: 'Failed to add event: ${response.statusCode}',
+          isSuccess: false,
         );
       }
     } catch (e) {
+      // Handle any exceptions
+      print('Error adding event: $e');
       showCustomSnackBar(
-        message: 'Something went wrong',
+        message: 'Failed to add event: $e',
+        isSuccess: false,
       );
     }
   }
@@ -113,8 +123,16 @@ class EventController extends GetxController {
   void editEvent(Event event) async {
     try {
       var url = Uri.http(ipAddress, 'donor_blood_api/admin/editEvent.php');
+      var token = await Memory.getToken();
+      if (token == null) {
+        showCustomSnackBar(
+          message: 'User not authenticated.',
+          isSuccess: false,
+        );
+        return;
+      }
       var response = await http.post(url, body: {
-        'token': await Memory.getToken(),
+        'token': token,
         'id': event.id ?? '',
         'event_name': event.eventName ?? '',
         'event_date': event.eventDate?.toString() ?? '',

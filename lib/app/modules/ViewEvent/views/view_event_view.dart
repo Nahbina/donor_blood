@@ -40,6 +40,7 @@ class ViewEventView extends StatelessWidget {
           _buildEventDetailRow('Date', event.eventDate?.toString() ?? ''),
           _buildEventDetailRow('Location', event.eventLocation ?? ''),
           _buildEventDetailRow('Time', event.eventTime ?? ''),
+          _buildEventDetailRow('Description', event.eventDescription ?? ''),
         ],
       ),
     );

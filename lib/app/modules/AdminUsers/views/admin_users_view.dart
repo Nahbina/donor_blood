@@ -27,7 +27,7 @@ class AdminUsersView extends GetView<AdminUsersController> {
                   DataColumn(label: Text('Full Name')),
                   DataColumn(label: Text('Email')),
                   DataColumn(label: Text('Role')),
-                  DataColumn(label: Text('Password')),
+                  // DataColumn(label: Text('Password')),
                   DataColumn(label: Text('Actions')), // Add actions column
                 ],
                 rows: controller.users.map((User user) {
@@ -38,7 +38,7 @@ class AdminUsersView extends GetView<AdminUsersController> {
                     DataCell(Text(user.fullName ?? '')),
                     DataCell(Text(user.email ?? '')),
                     DataCell(Text(user.role ?? '')),
-                    DataCell(Text(user.password ?? '')),
+                    // DataCell(Text(user.password ?? '')),
                     DataCell(Row(
                       children: [
                         IconButton(

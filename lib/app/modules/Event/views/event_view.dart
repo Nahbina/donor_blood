@@ -16,89 +16,87 @@ class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Obx(() {
-          if (_eventController.events.isEmpty) {
-            return const CircularProgressIndicator();
-          } else {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Id')),
-                  DataColumn(label: Text('Event Name')),
-                  DataColumn(label: Text('Event Date')),
-                  DataColumn(label: Text('Event Location')),
-                  DataColumn(label: Text('Event Time')),
-                  DataColumn(label: Text('Event Description')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: _eventController.events
-                    .map((event) => DataRow(
-                          cells: [
-                            DataCell(Text(event.id ?? '')),
-                            DataCell(Text(event.eventName ?? '')),
-                            DataCell(Text(event.eventDate?.toString() ?? '')),
-                            DataCell(Text(event.eventLocation ?? '')),
-                            DataCell(Text(event.eventTime ?? '')),
-                            DataCell(Text(event.eventDescription ?? '')),
-                            DataCell(
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditEventPage(event: event),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: const Text('Delete Event'),
-                                            content: const Text(
-                                                'Are you sure you want to delete this event?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: const Text('Cancel'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  _eventController
-                                                      .deleteEvent(event.id!);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: const Text('Delete'),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+      body: Obx(() {
+        if (_eventController.events.isEmpty) {
+          return const CircularProgressIndicator();
+        } else {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Id')),
+                DataColumn(label: Text('Event Name')),
+                DataColumn(label: Text('Event Date')),
+                DataColumn(label: Text('Event Location')),
+                DataColumn(label: Text('Event Time')),
+                DataColumn(label: Text('Event Description')),
+                DataColumn(label: Text('Actions')),
+              ],
+              rows: _eventController.events
+                  .map((event) => DataRow(
+                        cells: [
+                          DataCell(Text(event.id ?? '')),
+                          DataCell(Text(event.eventName ?? '')),
+                          DataCell(Text(event.eventDate?.toString() ?? '')),
+                          DataCell(Text(event.eventLocation ?? '')),
+                          DataCell(Text(event.eventTime ?? '')),
+                          DataCell(Text(event.eventDescription ?? '')),
+                          DataCell(
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditEventPage(event: event),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text('Delete Event'),
+                                          content: const Text(
+                                              'Are you sure you want to delete this event?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                _eventController
+                                                    .deleteEvent(event.id!);
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Delete'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
-                        ))
-                    .toList(),
-              ),
-            );
-          }
-        }),
-      ),
+                          ),
+                        ],
+                      ))
+                  .toList(),
+            ),
+          );
+        }
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showAddEventDialog(context);
@@ -108,7 +106,7 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  void _showAddEventDialog(BuildContext context) {
+  void _showAddEventDialog(BuildContext context) async {
     TextEditingController idController = TextEditingController();
     TextEditingController eventNameController = TextEditingController();
     TextEditingController eventDateController = TextEditingController();
@@ -185,7 +183,7 @@ class _EventViewState extends State<EventView> {
             ),
             TextButton(
               child: const Text("Save"),
-              onPressed: () {
+              onPressed: () async {
                 Event newEvent = Event(
                   id: idController.text,
                   eventName: eventNameController.text,
@@ -194,10 +192,9 @@ class _EventViewState extends State<EventView> {
                   eventTime: eventTimeController.text,
                   eventDescription: eventDescriptionController.text,
                 );
-                // Add the new event to the events list
-                _eventController.events.add(newEvent);
-                // Notify listeners of the change
-                _eventController.update();
+                // Call the addEvent function to store the new event
+                await _eventController.addEvent(newEvent);
+                // Close the dialog
                 Navigator.of(context).pop();
               },
             ),

@@ -9,64 +9,61 @@ class AdminPaymentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
+        scrollDirection: Axis.horizontal, // Enable horizontal scrolling
         child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-          child: SingleChildScrollView(
-            child: GetX<AdminPaymentController>(
-              init: AdminPaymentController(), // Initialize the controller
-              builder: (controller) {
-                if (controller.payments.isEmpty) {
-                  // Show a loading indicator if payments are still loading
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  // Build a table to display payment details
-                  return DataTable(
-                    columnSpacing: 16.0,
-                    headingRowHeight: 48.0,
-                    dataRowHeight: 64.0,
-                    columns: [
-                      DataColumn(label: Text('Payment ID')),
-                      DataColumn(label: Text('User ID')),
-                      DataColumn(label: Text('Full Name')),
-                      DataColumn(label: Text('Email')),
-                      DataColumn(label: Text('Amount')),
-                      DataColumn(label: Text('Payment Date')),
-                      DataColumn(label: Text('Status')),
-                      DataColumn(label: Text('Details')),
-                    ],
-                    rows: controller.payments.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final payment = entry.value;
-                      final color =
-                          index.isEven ? Colors.grey.shade200 : Colors.white;
-                      return DataRow(
-                        color:
-                            MaterialStateColor.resolveWith((states) => color),
-                        cells: [
-                          DataCell(Text(payment.paymentId ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                          DataCell(Text(payment.userId ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                          DataCell(Text(payment.fullName ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                          DataCell(Text(payment.email ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                          DataCell(Text(payment.amount ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                          DataCell(Text(payment.paymentDate?.toString() ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                          DataCell(Text(payment.status ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                          DataCell(Text(payment.details ?? ''),
-                              onTap: () => _onCellTap(context, payment)),
-                        ],
-                      );
-                    }).toList(),
-                  );
-                }
-              },
-            ),
+          child: GetX<AdminPaymentController>(
+            init: AdminPaymentController(), // Initialize the controller
+            builder: (controller) {
+              if (controller.payments.isEmpty) {
+                // Show a loading indicator if payments are still loading
+                return Center(child: CircularProgressIndicator());
+              } else {
+                // Build a table to display payment details
+                return DataTable(
+                  columnSpacing: 16.0,
+                  headingRowHeight: 48.0,
+                  dataRowHeight: 64.0,
+                  columns: [
+                    DataColumn(label: Text('Payment ID')),
+                    DataColumn(label: Text('User ID')),
+                    DataColumn(label: Text('Full Name')),
+                    DataColumn(label: Text('Email')),
+                    DataColumn(label: Text('Amount')),
+                    DataColumn(label: Text('Payment Date')),
+                    DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('Details')),
+                  ],
+                  rows: controller.payments.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final payment = entry.value;
+                    final color =
+                        index.isEven ? Colors.grey.shade200 : Colors.white;
+                    return DataRow(
+                      color: MaterialStateColor.resolveWith((states) => color),
+                      cells: [
+                        DataCell(Text(payment.paymentId ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                        DataCell(Text(payment.userId ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                        DataCell(Text(payment.fullName ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                        DataCell(Text(payment.email ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                        DataCell(Text(payment.amount ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                        DataCell(Text(payment.paymentDate?.toString() ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                        DataCell(Text(payment.status ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                        DataCell(Text(payment.details ?? ''),
+                            onTap: () => _onCellTap(context, payment)),
+                      ],
+                    );
+                  }).toList(),
+                );
+              }
+            },
           ),
         ),
       ),

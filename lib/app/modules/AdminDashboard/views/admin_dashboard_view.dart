@@ -80,10 +80,16 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: _buildColumnChart(controller),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: _buildColumnChart(controller),
+                          ),
                         ),
                         Expanded(
-                          child: _buildPieChart(controller),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: _buildPieChart(controller),
+                          ),
                         ),
                       ],
                     ),
@@ -167,13 +173,12 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
       Data('Users',
           double.parse(controller.statsResponse!.stats!.totalUsers ?? '0')),
       Data(
-          'Unique Donors',
+          'UniqueD',
           double.parse(
               controller.statsResponse!.stats!.totalUniqueDonors ?? '0')),
     ];
 
     return Container(
-      height: 400,
       color: Colors.white,
       padding: EdgeInsets.all(16),
       child: BarChart(
@@ -185,32 +190,74 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
 
   Widget _buildPieChart(AdminDashboardController controller) {
     List<PieChartSectionData> pieChartData = [
-      PieChartSectionData(
-        value: double.parse(controller.statsResponse!.stats!.noOfEvents ?? '0'),
-        color: Colors.blue,
-        title: 'Events',
-      ),
-      PieChartSectionData(
-        value: double.parse(controller.statsResponse!.stats!.totalUsers ?? '0'),
-        color: Colors.red,
-        title: 'Total Users',
-      ),
-      PieChartSectionData(
-        value: double.parse(
-            controller.statsResponse!.stats!.totalBloodRequests ?? '0'),
-        color: Colors.green,
-        title: 'Blood Requests',
-      ),
-      PieChartSectionData(
-        value:
-            double.parse(controller.statsResponse!.stats!.totalDonors ?? '0'),
-        color: Colors.orange,
-        title: 'Donors',
-      ),
+      if (double.parse(controller.statsResponse!.stats!.totalAGroup ?? '0') > 0)
+        PieChartSectionData(
+          value:
+              double.parse(controller.statsResponse!.stats!.totalAGroup ?? '0'),
+          color: Colors.blue,
+          title: 'A+',
+        ),
+      if (double.parse(controller.statsResponse!.stats!.totalBGroup ?? '0') > 0)
+        PieChartSectionData(
+          value:
+              double.parse(controller.statsResponse!.stats!.totalBGroup ?? '0'),
+          color: Colors.green,
+          title: 'B+',
+        ),
+      if (double.parse(controller.statsResponse!.stats!.totalAbGroup ?? '0') >
+          0)
+        PieChartSectionData(
+          value: double.parse(
+              controller.statsResponse!.stats!.totalAbGroup ?? '0'),
+          color: Colors.red,
+          title: 'AB+',
+        ),
+      if (double.parse(controller.statsResponse!.stats!.totalOGroup ?? '0') > 0)
+        PieChartSectionData(
+          value:
+              double.parse(controller.statsResponse!.stats!.totalOGroup ?? '0'),
+          color: Colors.yellow,
+          title: 'O+',
+        ),
+      if (double.parse(
+              controller.statsResponse!.stats!.totalANegativeGroup ?? '0') >
+          0)
+        PieChartSectionData(
+          value: double.parse(
+              controller.statsResponse!.stats!.totalANegativeGroup ?? '0'),
+          color: Colors.grey,
+          title: 'A-',
+        ),
+      if (double.parse(
+              controller.statsResponse!.stats!.totalBNegativeGroup ?? '0') >
+          0)
+        PieChartSectionData(
+          value: double.parse(
+              controller.statsResponse!.stats!.totalBNegativeGroup ?? '0'),
+          color: Colors.orange,
+          title: 'B-',
+        ),
+      if (double.parse(
+              controller.statsResponse!.stats!.totalAbNegativeGroup ?? '0') >
+          0)
+        PieChartSectionData(
+          value: double.parse(
+              controller.statsResponse!.stats!.totalAbNegativeGroup ?? '0'),
+          color: Colors.pink,
+          title: 'AB-',
+        ),
+      if (double.parse(
+              controller.statsResponse!.stats!.totalONegativeGroup ?? '0') >
+          0)
+        PieChartSectionData(
+          value: double.parse(
+              controller.statsResponse!.stats!.totalONegativeGroup ?? '0'),
+          color: Colors.purple,
+          title: 'O-',
+        ),
     ];
 
     return Container(
-      height: 400,
       color: Colors.white,
       padding: EdgeInsets.all(16),
       child: Row(

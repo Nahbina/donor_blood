@@ -61,10 +61,13 @@ class DonationHistoryView extends GetView<DonationHistoryController> {
                         Text('Created At: ${donation.createdAt}'),
                       ],
                     ),
-                    // trailing: Icon(
-                    //   Icons.arrow_forward_ios,
-                    //   color: Colors.grey,
-                    // ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        // Add your delete functionality here
+                        // You might want to show a confirmation dialog before deleting
+                      },
+                    ),
                     onTap: () {
                       // Add your onTap functionality here
                     },
