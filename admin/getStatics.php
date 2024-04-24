@@ -37,6 +37,14 @@ $totalBloodRequests = 0;
 $totalDonors = 0;
 $totalUsers = 0;
 $totalUniqueDonors = 0; // Variable to store the count of unique donors
+$totalAGroup = 0;
+$totalBGroup = 0;
+$totalABGroup = 0;
+$totalOGroup = 0;
+$totalA_Negative_Group = 0;
+$totalB_Negative_Group = 0;
+$totalAB_Negative_Group = 0;
+$totalO_Negative_Group = 0;
 
 // Fetch stats
 $sql = "SELECT COUNT(*) AS totalEvents FROM events";
@@ -91,8 +99,38 @@ if ($result) {
     die();
 }
 
+// Fetch count of each blood group
+$sql = "SELECT 
+            SUM(CASE WHEN blood_type = 'A+' THEN 1 ELSE 0 END) AS totalA,
+            SUM(CASE WHEN blood_type = 'B+' THEN 1 ELSE 0 END) AS totalB,
+            SUM(CASE WHEN blood_type = 'AB+' THEN 1 ELSE 0 END) AS totalAB,
+            SUM(CASE WHEN blood_type = 'O+' THEN 1 ELSE 0 END) AS totalO,
+            SUM(CASE WHEN blood_type = 'A-' THEN 1 ELSE 0 END) AS totalA_Negative,
+            SUM(CASE WHEN blood_type = 'B-' THEN 1 ELSE 0 END) AS totalB_Negative,
+            SUM(CASE WHEN blood_type = 'AB-' THEN 1 ELSE 0 END) AS totalAB_Negative,
+            SUM(CASE WHEN blood_type = 'O-' THEN 1 ELSE 0 END) AS totalO_Negative
+        FROM donors";
+$result = mysqli_query($CON, $sql);
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $totalAGroup = $row['totalA'];
+    $totalBGroup = $row['totalB'];
+    $totalABGroup = $row['totalAB'];
+    $totalOGroup = $row['totalO'];
+    $totalA_Negative_Group = $row['totalA_Negative'];
+    $totalB_Negative_Group = $row['totalB_Negative'];
+    $totalAB_Negative_Group = $row['totalAB_Negative'];
+    $totalO_Negative_Group = $row['totalO_Negative'];
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to fetch blood group counts!"
+    ]);
+    die();
+}
+
 // Fetch count of unique donors based on blood types (A-, B-, AB-, O-)
-$sql = "SELECT COUNT(*) AS totalUniqueDonors FROM (SELECT DISTINCT blood_type FROM donors WHERE blood_type IN ('A-', 'B-', 'AB-', 'O-')) AS unique_donors";
+$sql = "SELECT COUNT(*) AS totalUniqueDonors FROM (SELECT blood_type FROM donors WHERE blood_type IN ('A-', 'B-', 'AB-', 'O-')) AS unique_donors";
 $result = mysqli_query($CON, $sql);
 if ($result) {
     $row = mysqli_fetch_assoc($result);
@@ -127,6 +165,14 @@ echo json_encode([
         "totalBloodRequests" => $totalBloodRequests,
         "totalDonors" => $totalDonors,
         "totalUsers" => $totalUsers,
+        "totalAGroup" => $totalAGroup,
+        "totalBGroup" => $totalBGroup,
+        "totalABGroup" => $totalABGroup,
+        "totalOGroup" => $totalOGroup,
+        "totalA_Negative_Group" => $totalA_Negative_Group,
+        "totalB_Negative_Group" => $totalB_Negative_Group,
+        "totalAB_Negative_Group" => $totalAB_Negative_Group,
+        "totalO_Negative_Group" => $totalO_Negative_Group,
         "totalUniqueDonors" => $totalUniqueDonors // Include count of unique donors
     ]
 ]);

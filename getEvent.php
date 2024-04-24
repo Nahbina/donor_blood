@@ -54,7 +54,8 @@ if ($result) {
             "event_date" => $row['event_date'],
             "event_location" => $row['event_location'],
             "event_description" => $row['event_description'],
-            "event_time" => $row['event_time']
+            "event_time" => $row['event_time'],
+            "user_id" => $row['user_id']
         ];
     }
     echo json_encode([
